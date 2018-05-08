@@ -16,6 +16,9 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 // Daum map API example.
     /*
@@ -42,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     Tab_calendar F_calendar;
     Tab_alarm F_alarm;
     Tab_setting F_setting;
+
+    //private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    //private DatabaseReference databaseReference = firbaseDatabase.getReference();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
