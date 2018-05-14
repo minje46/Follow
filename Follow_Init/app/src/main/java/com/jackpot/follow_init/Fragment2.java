@@ -33,26 +33,31 @@ import java.util.Map;
 
 public class Fragment2 extends Fragment {
 
-        private Spinner sp_api;
-        private RadioGroup rg_object_type;
-        private RadioButton rb_json, rb_map;
-        private Button bt_api_call;
-        private TextView tv_data;
+    private Spinner sp_api;
+    private RadioGroup rg_object_type;
+    private RadioButton rb_json, rb_map;
+    private Button bt_api_call;
+    private TextView tv_data;
 
-        private Context context;
-        private String spinnerSelectedName;
+    private Context context;
+    private String spinnerSelectedName;
 
 
-        private ODsayService odsayService;
-        private JSONObject jsonObject;
-        private Map mapObject;
+    private ODsayService odsayService;
+    private JSONObject jsonObject;
+    private Map mapObject;
+
+    private Double dept_latitude = 37.4507452;
+    private Double dept_longitude = 127.1288474;
+    private Double dest_latitude = 37.478688;
+    private Double dest_longitude = 127.12617499999999;
 
     public void onCreate(@Nullable Bundle savedInstanceState) { super.onCreate(savedInstanceState);}
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment2, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment2, container, false);
 
         context = getActivity();
         sp_api = (Spinner)rootView.findViewById(R.id.sp_api);
@@ -64,7 +69,6 @@ public class Fragment2 extends Fragment {
         sp_api.setSelection(0);
 
         odsayService = ODsayService.init(context, getString(R.string.odsay_API_Key));
-    //    odsayService = ODsayService.init(context, "@string/odsay_API_Key");
         odsayService.setReadTimeout(5000);
         odsayService.setConnectionTimeout(5000);
 
@@ -72,6 +76,13 @@ public class Fragment2 extends Fragment {
         sp_api.setOnItemSelectedListener(onItemSelectedListener);
         rg_object_type.setOnCheckedChangeListener(onCheckedChangeListener);
 
+        /*
+        dept_latitude = ((MainActivity)getActivity()).getDept_latitude();
+        dept_longitude = ((MainActivity)getActivity()).getDept_longitude();
+        dest_latitude = ((MainActivity)getActivity()).getDest_latitude();
+        dest_longitude = ((MainActivity)getActivity()).getDest_longitude();
+        Log.d("Coordinate in Fragment2", String.valueOf(dept_latitude) + "\n" +String.valueOf(dept_longitude) +"\n" +String.valueOf(dest_latitude) + "\n" +String.valueOf(dest_longitude));
+        */
         return rootView;
     }
 
@@ -165,7 +176,8 @@ public class Fragment2 extends Fragment {
                     odsayService.requestSubwayPath("1000", "201", "222", "1", onResultCallbackListener);
                     break;
                 case "대중교통 길찾기":
-                    odsayService.requestSearchPubTransPath("126.926493082645", "37.6134436427887", "127.126936754911", "37.5004198786564", "0", "0", "0", onResultCallbackListener);
+//                    odsayService.requestSearchPubTransPath("126.926493082645", "37.6134436427887", "127.126936754911", "37.5004198786564", "0", "0", "0", onResultCallbackListener);
+                    odsayService.requestSearchPubTransPath(dept_longitude.toString(), dept_latitude.toString(), dest_longitude.toString(), dest_latitude.toString(),"0", "0", "0", onResultCallbackListener);
                     break;
                 case "지하철역 환승 정보 조회":
                     odsayService.requestSubwayTransitInfo("133", onResultCallbackListener);
