@@ -1,5 +1,6 @@
 package com.jackpot.follow_init;
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity{
 
   //  private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
   //  private DatabaseReference databaseReference = firebaseDatabase.getReference();
+
+//    public int turn_Service = 0;
+
+    public int turn_Service = 1;
 
     private Double dept_latitude = 0.0;
     private Double dept_longitude = 0.0;
@@ -83,6 +88,20 @@ public class MainActivity extends AppCompatActivity{
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        startService(new Intent(getApplication(),WayService.class));
+    }
+
+    public void goSearch(){
+        Intent check = new Intent(getApplication(),WayService.class);
+        check.putExtra("check", 1);
+        check.putExtra("dept_latitude",dept_latitude);
+        check.putExtra("dept_longitude",dept_longitude);
+        check.putExtra("dest_latitude",dest_latitude);
+        check.putExtra("dest_longitude",dest_longitude);
+        Log.d("Service test","It came to go search method");
+        startService(check);
+        Log.d("Service test","It is after call service again");
     }
         // DB이용.
         // databaseReference.child("message").push().setValue();

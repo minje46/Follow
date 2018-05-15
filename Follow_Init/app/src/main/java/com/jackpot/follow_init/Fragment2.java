@@ -22,9 +22,14 @@ import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
 import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -46,6 +51,8 @@ public class Fragment2 extends Fragment {
     private ODsayService odsayService;
     private JSONObject jsonObject;
     private Map mapObject;
+
+    private HashMap<Integer,String> busType = new HashMap<Integer, String>();
 
     private Double dept_latitude = 37.4507452;
     private Double dept_longitude = 127.1288474;
@@ -75,7 +82,9 @@ public class Fragment2 extends Fragment {
         bt_api_call.setOnClickListener(onClickListener);
         sp_api.setOnItemSelectedListener(onItemSelectedListener);
         rg_object_type.setOnCheckedChangeListener(onCheckedChangeListener);
+        SetMap_busType();
 
+        // test 위해서 주석 처리. (출발지, 도착지 위,경도 값 저장)
         /*
         dept_latitude = ((MainActivity)getActivity()).getDept_latitude();
         dept_longitude = ((MainActivity)getActivity()).getDept_longitude();
@@ -110,14 +119,52 @@ public class Fragment2 extends Fragment {
     private OnResultCallbackListener onResultCallbackListener = new OnResultCallbackListener() {
         @Override
         public void onSuccess(ODsayData oDsayData, API api) {
-            jsonObject = oDsayData.getJson();
+            // jsonObject 는 전체 jason data 저장 객체.
+            jsonObject = oDsayData.getJson();       // 전체 대중교통 길찾기 data 를 Json 으로 불러오는 것.
             mapObject = oDsayData.getMap();
             if (rg_object_type.getCheckedRadioButtonId() == rb_json.getId()) {
                 tv_data.setText(jsonObject.toString());
-                Log.e("JSON", jsonObject.toString());
+
+                Log.e("JSON All", jsonObject.toString());   // Json data 제대로 불러왔는지 log.
+
+                try {
+                    // path array 는 path 관련 json data 를 array 형태로 저장.
+                    JSONArray path = (JSONArray)jsonObject.getJSONObject("result").get("path");
+                    Log.d("Json path", path.toString());    // Path parsing 확인 log.
+
+                    // subPath array 는 path 의 child 중 subPath data 를 array 로 저장.
+                    JSONArray P_subPath = (JSONArray)path.getJSONObject(0).get("subPath");
+                    Log.d("Json subPath", P_subPath.toString());    // subPath parsing 확인 log.
+
+                    // subPath 의 child 중 traffic 을 저장.
+                    ArrayList<JSONObject> C_subPath = new ArrayList<JSONObject>();
+                    for(int i = 0; i < P_subPath.length(); i++)
+                        C_subPath.add(i,P_subPath.getJSONObject(i));
+
+                    for(int i = 0; i < P_subPath.length(); i++)
+                        Log.d("Json traffics", C_subPath.get(i).toString());
+
+                    Log.d("Json traffic0 - Type", String.valueOf(C_subPath.get(0).getInt("trafficType")));
+                    Log.d("Json traffic0 - Time", String.valueOf(C_subPath.get(0).getInt("sectionTime")));
+
+                    Log.d("Json traffic1 - BusNo", C_subPath.get(1).getJSONArray("lane").getJSONObject(0).getString("busNo").toString());
+                    Log.d("Json traffic1 - BusType", String.valueOf(C_subPath.get(1).getJSONArray("lane").getJSONObject(0).getInt("type")));
+
+                    Log.d("Json traffic2", C_subPath.get(2).toString());
+
+                    if(busType.containsKey(C_subPath.get(1).getJSONArray("lane").getJSONObject(0).getInt("type")))
+                        Log.d("Json Type compare",busType.get(C_subPath.get(1).getJSONArray("lane").getJSONObject(0).getInt("type")));
+                    else
+                        Log.d("Json Type compare", "Not exist");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             } else if (rg_object_type.getCheckedRadioButtonId() == rb_map.getId()) {
                 tv_data.setText(mapObject.toString());
             }
+
         }
 
         @Override
@@ -194,4 +241,13 @@ public class Fragment2 extends Fragment {
             }
         }
     };
+
+    private void SetMap_busType(){
+        busType.put(1,"일반"); busType.put(2,"좌석"); busType.put(3,"마을버스");
+        busType.put(4,"직행좌석"); busType.put(5,"공항버스"); busType.put(6,"간선급행");
+        busType.put(10,"외곽"); busType.put(11,"간선"); busType.put(12,"지선");
+        busType.put(13,"순환"); busType.put(14,"광역"); busType.put(15,"급행");
+        busType.put(20,"농어촌버스"); busType.put(21,"제주도 시외형버스"); busType.put(22,"경기도 시외형버스");
+        busType.put(26, "급행간선");
+    }
 }

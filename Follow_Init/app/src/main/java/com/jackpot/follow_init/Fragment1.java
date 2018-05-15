@@ -138,6 +138,14 @@ public class Fragment1 extends Fragment implements OnMapReadyCallback, GoogleApi
             }
         });
 
+        Button btn_OK = layout.findViewById(R.id.btn_OK);
+        btn_OK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity ma = (MainActivity)getActivity();
+                ma.goSearch();
+            }
+        });
         return layout;
     }
 
