@@ -30,11 +30,4 @@
         android:text="Current Location"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"/>
-    <Button
-        android:id="@+id/btn_Set"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Departure."
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

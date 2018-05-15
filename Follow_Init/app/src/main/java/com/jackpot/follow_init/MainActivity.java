@@ -1,16 +1,13 @@
 package com.jackpot.follow_init;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     Tab_schedule F_schedule;        // Schedule Fragment 생성.
@@ -22,11 +19,6 @@ public class MainActivity extends AppCompatActivity{
 
   //  private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
   //  private DatabaseReference databaseReference = firebaseDatabase.getReference();
-
-    private Double dept_latitude = 0.0;
-    private Double dept_longitude = 0.0;
-    private Double dest_latitude = 0.0;
-    private Double dest_longitude = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,48 +75,8 @@ public class MainActivity extends AppCompatActivity{
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-    }
         // DB이용.
         // databaseReference.child("message").push().setValue();
 
-        public void setDept(Double x, Double y){
-            dept_latitude = x;
-            dept_longitude = y;
-            Log.d("Dept_Coordinate in Main", String.valueOf(dept_latitude) +"\n" +String.valueOf(dept_longitude));
-
-
-            Fragment send_frag = new Fragment2();
-            Bundle send_bund = new Bundle();
-            send_bund.putDouble("dept_latitude",dept_latitude);
-            send_bund.putDouble("dept_longitude",dept_longitude);
-            send_frag.setArguments(send_bund);
-          }
-
-         public void setDest(Double x, Double y){
-         dest_latitude = x;
-         dest_longitude = y;
-         Log.d("Dest_Coordinate in Main", String.valueOf(dest_latitude) +"\n" +String.valueOf(dest_longitude));
-
-         Fragment2 send_frag = new Fragment2();
-         Bundle send_bund = new Bundle();
-         send_bund.putDouble("dest_latitude",dest_latitude);
-         send_bund.putDouble("dest_longitude",dest_longitude);
-         send_frag.setArguments(send_bund);
-         }
-
-         public Double getDept_latitude(){
-             return dept_latitude;
-         }
-
-         public Double getDept_longitude(){
-            return dept_longitude;
-         }
-
-         public Double getDest_latitude(){
-             return dest_latitude;
-         }
-
-         public Double getDest_longitude(){
-             return dest_longitude;
-         }
+    }
 }
