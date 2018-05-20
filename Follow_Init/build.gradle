@@ -20,9 +20,13 @@ allprojects {
         google()
         jcenter()
 
+        // Google library.
         flatDir{
             dirs 'libs'
         }
+
+        // Schedule library.
+        maven { url 'https://jitpack.io' }
     }
 }
 
