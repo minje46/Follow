@@ -33,13 +33,17 @@ dependencies {
     implementation('com.google.android.gms:play-services-places:15.0.1')
     implementation('com.google.android.gms:play-services-location:15.0.1')
 
-  //  implementation('com.google.firebase:firebase-core:15.0.0')
- //   implementation('com.google.firebase:firebase-database:15.0.0')
+    // Google firebase.
+    implementation('com.google.firebase:firebase-core:15.0.0')
+    implementation('com.google.firebase:firebase-database:15.0.0')
 
     // Google places library.
    compile('com.jackpot.follow_init:SDK_release_v1.0:1.0@aar')
 
     // Schedule library.
-    compile 'com.github.EunsilJo:TimeTable:1.0' 
+    compile 'com.github.EunsilJo:TimeTable:1.0'
+
+    // Calendar library.
+    implementation 'com.p_v:flexiblecalendar:1.2.1'
 }
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'

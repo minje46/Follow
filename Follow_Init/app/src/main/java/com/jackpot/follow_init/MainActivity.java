@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MainActivity extends AppCompatActivity{
 
     Toolbar toolbar;
@@ -21,8 +24,9 @@ public class MainActivity extends AppCompatActivity{
     Fragment1 F_map;                // Map Fragment 생성.
     Fragment2 F_search;             // Odsay Fragment 생성.
 
-  //  private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-  //  private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    // Firebase object 선언.
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
 //    public int turn_Service = 0;
 
