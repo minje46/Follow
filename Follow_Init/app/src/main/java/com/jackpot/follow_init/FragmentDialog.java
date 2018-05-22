@@ -26,6 +26,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class FragmentDialog extends DialogFragment {
+    Fragment fragment;
     View view;
 
     // Database 객체 생성. (Firebase에서 schedule의 tree를 load.)
@@ -81,10 +82,22 @@ public class FragmentDialog extends DialogFragment {
                 data.setEnd_mintue(timePicker2.getMinute());
 
                 // 객체를 DB에 저장.
-                databaseReference.push().setValue(data);
+               // databaseReference.child(data.getEvent_name()).setValue(data);
+                DatabaseReference dr = FirebaseDatabase.getInstance().getReference();
+                dr.child("Schedule").push().setValue(data);
+
+                Toast.makeText(getActivity(), data.getEvent_name() +" schedule is saved", Toast.LENGTH_SHORT).show();
+                dismiss();
             }
         });
 
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).showMap();
+                onPause();
+            }
+        });
 
         btnArr.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,13 +105,13 @@ public class FragmentDialog extends DialogFragment {
 
             }
         });
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        dismiss();
     }
 
     private long getMillis(String day) {

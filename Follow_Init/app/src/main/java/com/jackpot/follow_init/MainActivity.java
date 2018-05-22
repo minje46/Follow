@@ -39,8 +39,12 @@ public class MainActivity extends AppCompatActivity{
     private Double dest_latitude = 0.0;
     private Double dest_longitude = 0.0;
 
+
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference("Alarm");
+    private DatabaseReference databaseReference = firebaseDatabase.getReference("Schedule");
+    obj_schedule get_data;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +53,6 @@ public class MainActivity extends AppCompatActivity{
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-      //  databaseReference.child("User").push().setValue("test1");
-      //  databaseReference.push().setValue("test3");
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -101,7 +102,49 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                // Push 고유키 값 가져오기.
+                //String id = databaseReference.child("Schedule").getKey();
+                //Log.d("Test DB 0", id);
+
+
+                Log.d("Test DB 1",dataSnapshot.getValue().toString());
+                get_data = dataSnapshot.getValue(obj_schedule.class);
+                Log.d("Test DB 2", get_data.getDept_name() + "\n\n" + get_data.getEvent_name());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         startService(new Intent(getApplication(),WayService.class));
+    }
+
+    public void showMap(){
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, F_map).commit();
+//        startActivity(new Intent(getApplication(), map.class));
     }
 
     public void goSearch(){
@@ -115,8 +158,6 @@ public class MainActivity extends AppCompatActivity{
         startService(check);
         Log.d("Service test","It is after call service again");
     }
-        // DB이용.
-        // databaseReference.child("message").push().setValue();
 
         public void setDept(Double x, Double y){
             dept_latitude = x;
@@ -158,9 +199,4 @@ public class MainActivity extends AppCompatActivity{
          public Double getDest_longitude(){
              return dest_longitude;
          }
-
-    public void passData(ArrayList<String> txt, String startTime, String endTime) {
-        Log.e("dd", "adsf");
-        Toast.makeText(this, startTime, Toast.LENGTH_SHORT).show();
-    }
 }

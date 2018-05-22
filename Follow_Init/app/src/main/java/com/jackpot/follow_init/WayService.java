@@ -18,6 +18,12 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.odsay.odsayandroidsdk.API;
 import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
@@ -42,6 +48,9 @@ public class WayService extends Service {
     private Double dept_longitude = 127.1288474;
     private Double dest_latitude = 37.478688;
     private Double dest_longitude = 127.12617499999999;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference("Schedule");
 
     public WayService() {
     }
@@ -123,6 +132,45 @@ public class WayService extends Service {
         odsayService.setReadTimeout(5000);
         odsayService.setConnectionTimeout(5000);
 
+        // DB
+        /*
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                obj_schedule get_data = null;
+
+                // Push 고유키 값 가져오기.
+                String id = databaseReference.child("User").getKey();
+                Log.d("Test DB 0", id);
+
+                Log.d("Test DB 1",dataSnapshot.getValue().toString());
+                get_data = dataSnapshot.getValue(obj_schedule.class);
+
+                Log.d("Test DB 2", get_data.getDept_name() + "\n" + get_data.toString());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+*/
         odsayService.requestSearchPubTransPath(dept_longitude.toString(), dept_latitude.toString(), dest_longitude.toString(), dest_latitude.toString(),"0", "0", "0", onResultCallbackListener);
     }
 
