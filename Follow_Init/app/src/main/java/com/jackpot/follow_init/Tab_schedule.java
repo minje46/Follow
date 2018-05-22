@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,12 +31,12 @@ import java.util.List;
  * Created by KWAK on 2018-05-14.
  */
 
-public class Tab_schedule extends Fragment {
+public class Tab_schedule extends Fragment implements View.OnClickListener{
     private View mView, btnMode;
     private TimeTableView timeTable;
+    private FloatingActionButton fab;
 
-    private ArrayList<TimeTableData> mShortSamples = new ArrayList<>();
-    private ArrayList<TimeTableData> mLongSamples = new ArrayList<>();
+    private String title = new String();
 
     private List<String> mTitles = Arrays.asList("Korean", "English", "Math", "Science", "Physics", "Chemistry", "Biology");
     private List<String> mLongHeaders = Arrays.asList("/","Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
@@ -48,11 +49,11 @@ public class Tab_schedule extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = (ViewGroup) inflater.inflate(R.layout.tab_schedule, container, false);
-
+        fab = mView.findViewById(R.id.plus);
         initLayout();
         initListener();
         initData();
-
+        fab.setOnClickListener(this);
         return mView;
     }
 
@@ -134,5 +135,18 @@ public class Tab_schedule extends Fragment {
 
     private DateTimeFormatter getDateTimePattern() {
         return DateTimeFormat.forPattern("yyyy-MM-dd");
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.plus:
+                Bundle args = new Bundle();
+                args.putString("key", "value");
+
+                FragmentDialog dialog = new FragmentDialog();
+                dialog.setArguments(args);
+                dialog.show(getActivity().getSupportFragmentManager(), "tag");
+                break;
+        }
     }
 }

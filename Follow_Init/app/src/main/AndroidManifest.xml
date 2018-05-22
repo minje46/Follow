@@ -9,7 +9,7 @@
         android:name="com.jackpot.follow_init.permission.ACCESS_FINE_LOCATION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="android.permission.ACESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />

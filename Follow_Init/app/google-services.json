@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "529603795679-q5sdo7hm423hvhg1sjuift79les2mc5k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jackpot.follow_init",
+            "certificate_hash": "33272afe90b127126141c647eb962395be1167b6"
+          }
+        },
+        {
           "client_id": "529603795679-5pkmk89fgk425c6bahtkdcia2ammct85.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

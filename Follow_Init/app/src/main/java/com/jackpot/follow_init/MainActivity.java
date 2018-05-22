@@ -10,9 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -24,10 +30,6 @@ public class MainActivity extends AppCompatActivity{
     Fragment1 F_map;                // Map Fragment 생성.
     Fragment2 F_search;             // Odsay Fragment 생성.
 
-    // Firebase object 선언.
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference();
-
 //    public int turn_Service = 0;
 
     public int turn_Service = 1;
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity{
     private Double dest_latitude = 0.0;
     private Double dest_longitude = 0.0;
 
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference("Alarm");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,9 @@ public class MainActivity extends AppCompatActivity{
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+      //  databaseReference.child("User").push().setValue("test1");
+      //  databaseReference.push().setValue("test3");
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
@@ -150,4 +158,9 @@ public class MainActivity extends AppCompatActivity{
          public Double getDest_longitude(){
              return dest_longitude;
          }
+
+    public void passData(ArrayList<String> txt, String startTime, String endTime) {
+        Log.e("dd", "adsf");
+        Toast.makeText(this, startTime, Toast.LENGTH_SHORT).show();
+    }
 }
