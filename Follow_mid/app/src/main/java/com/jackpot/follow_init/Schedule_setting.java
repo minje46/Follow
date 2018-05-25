@@ -1,12 +1,11 @@
 package com.jackpot.follow_init;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,8 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Created by KWAK on 2018-05-23.
  */
 
-public class Schedule_setting extends AppCompatActivity implements Map.OnMapListener{
-//public class Schedule_setting extends AppCompatActivity implements asd.OnMapListener{
+public class Schedule_setting extends AppCompatActivity{
     // Database 객체 생성. (Firebase에서 schedule의 tree를 load.)
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference("Schedule");
@@ -32,8 +30,6 @@ public class Schedule_setting extends AppCompatActivity implements Map.OnMapList
     TimePicker startTime;
     TimePicker endTime;
 
-    Map F_map;               // Map Fragment 생성.
-  //  asd F_map;
     obj_schedule data;
 
     int set_code = 0;        // code 0 - set result to departure / code 1 - set result to destination.
@@ -45,8 +41,6 @@ public class Schedule_setting extends AppCompatActivity implements Map.OnMapList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedule_setting);
 
-        F_map = new Map();
-      //  F_map = new asd();
         data = new obj_schedule();
 
         // XML의 widget에 접근하기 위한 구체화.
@@ -63,14 +57,14 @@ public class Schedule_setting extends AppCompatActivity implements Map.OnMapList
         btnDept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.schedule_setting_main, F_map).commit();
+                startActivityForResult(new Intent(getApplicationContext(),Map.class),1);
             }
         });
 
         btnDest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.schedule_setting_main, F_map).commit();
+                startActivityForResult(new Intent(getApplicationContext(),Map.class),2);
             }
         });
 
@@ -111,18 +105,6 @@ public class Schedule_setting extends AppCompatActivity implements Map.OnMapList
         });
     }
 
-    @Override
-    public void onMap(String name, double lati, double longi){
-        if(set_code == 0){
-            inDept.setText(name);
-            set_code = 1;
-        } else {
-            inDest.setText(name);
-            set_code = 0;
-        }
-        Toast.makeText(this, "Name : "+name +"\nLatitude : "+lati +"\nLongitude : "+longi , Toast.LENGTH_SHORT).show();
-    }
-
     /*
     private long getMillis(String day) {
         DateTime date = getDateTimePattern().parseDateTime(day);
@@ -133,5 +115,28 @@ public class Schedule_setting extends AppCompatActivity implements Map.OnMapList
         return DateTimeFormat.forPattern("HH-mm");
     }
     */
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //g_intent = getIntent();
+        if(set_code == 0){
+            String name = data.getStringExtra("Name");
+            inDept.setText(name);
+            set_code = 1;
+
+            Double latitude = data.getDoubleExtra("Latitude", 0);
+            Double longitude = data.getDoubleExtra("Longitude", 0);
+            Toast.makeText(getApplicationContext(),"Name : "+name +"\nLatitude : "+latitude +"\nLongitude : "+longitude,Toast.LENGTH_SHORT).show();
+        } else {
+            String name = data.getStringExtra("Name");
+            inDest.setText(name);
+            set_code = 0;
+
+            Double latitude = data.getDoubleExtra("Latitude", 0);
+            Double longitude = data.getDoubleExtra("Longitude", 0);
+            Toast.makeText(getApplicationContext(),"Name : "+name +"\nLatitude : "+latitude +"\nLongitude : "+longitude,Toast.LENGTH_SHORT).show();
+        }
+    }
 }
 

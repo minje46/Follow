@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity{
         F_calendar = new Tab_calendar();
         F_alarm = new Tab_alarm();
         F_setting = new Tab_setting();
-        F_map = new Map();
         F_search = new Fragment2();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, F_schedule).commit();
@@ -81,8 +80,8 @@ public class MainActivity extends AppCompatActivity{
                     //selected = F_alarm;
                     selected = F_search;
                 else if(position == 3)
-                   // selected = F_setting;
-                    selected = F_map;
+                    selected = F_setting;
+
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, selected).commit();
             }
@@ -150,12 +149,6 @@ public class MainActivity extends AppCompatActivity{
 
 
         startService(new Intent(getApplication(),WayService.class));
-    }
-
-    public void showMap(){
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, F_map).commit();
-//        startActivity(new Intent(getApplication(), map.class));
     }
 
     public void goSearch(){

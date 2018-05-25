@@ -17,6 +17,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -53,7 +56,7 @@ import android.widget.Toast;
 /**
  * Created by KWAK on 2018-05-14.
  */
-public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+public class Map extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
     private static final String TAG = "googlemap_example";
@@ -61,9 +64,6 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
     private static final int UPDATE_INTERVAL_MS = 15000;
     private static final int FASTEST_UPDATE_INTERVAL_MS = 15000;
-
-    private OnMapListener onMapListener;
-    private static View layout;
 
     private GoogleMap googleMap = null;
     private MapView mapView = null;
@@ -78,89 +78,49 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
 
     public Map(){}
 
-    // Google Map 을 가지고 있는 해당 fragment 의 call back listener interface.
-    public interface OnMapListener{
-        void onMap(String name, double lati, double longi);
-    }
-
-    // Connect Fragment and Activity.
-    @Override
-    public void onAttach(Context context){
-        super.onAttach(context);
-        if(context instanceof OnMapListener){
-            onMapListener = (OnMapListener) context;
-        }else{
-            throw new RuntimeException(context.toString()+"must implement OnMapListener");
-        }
-    }
-
     // Fragment initialize.
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) { super.onCreate(savedInstanceState);}
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.map);
+        mapView = (MapView)findViewById(R.id.map);
+        mapView.getMapAsync(this);
 
-    // Inflation and related views create.
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(layout != null){
-            ViewGroup parent = (ViewGroup)layout.getParent();
-            if(parent != null) {
-                parent.removeView(layout);
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override       // 장소가 선택되었을 때, 실행.
+            public void onPlaceSelected(Place place) {
+                Location location = new Location("");
+                location.setLatitude(place.getLatLng().latitude);
+                location.setLongitude(place.getLatLng().longitude);
+
+                setCurrentLocation(location, place.getName().toString(), place.getAddress().toString());
             }
-        }
-        try{
-            // map 을 inflation 하는게 exception 발생.
-            layout = inflater.inflate(R.layout.map, container, false);
-            mapView = (MapView)layout.findViewById(R.id.map);
-            Toast.makeText(getActivity(),"TTTTTTTTTTT11111",Toast.LENGTH_SHORT).show();
-            mapView.getMapAsync(this);
+            @Override
+            public void onError(Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
 
-            PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)getActivity().getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                @Override       // 장소가 선택되었을 때, 실행.
-                public void onPlaceSelected(Place place) {
-                    Location location = new Location("");
-                    location.setLatitude(place.getLatLng().latitude);
-                    location.setLongitude(place.getLatLng().longitude);
+        // 현재 위치 찾아가기.
+        Button btnC_location = findViewById(R.id.btnC_location);
+        btnC_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchCurrentPlaces();
+            }
+        });
 
-                    setCurrentLocation(location, place.getName().toString(), place.getAddress().toString());
-                }
-                @Override
-                public void onError(Status status) {
-                    Log.i(TAG, "An error occurred: " + status);
-                }
-            });
+        // 취소 버튼.
+        Button btn_Back = findViewById(R.id.btn_Back);
+        btn_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-            // 현재 위치 찾아가기.
-            Button btnC_location = layout.findViewById(R.id.btnC_location);
-            btnC_location.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    searchCurrentPlaces();
-                }
-            });
-
-            // 취소 버튼.
-            Button btn_Back = layout.findViewById(R.id.btn_Back);
-            btn_Back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getFragmentManager().beginTransaction().remove(Map.this).commit();
-                    getFragmentManager().popBackStack();
-                }
-            });
-        } catch (InflateException e){            Toast.makeText(getActivity(),"TTTTTTTTTTT2222",Toast.LENGTH_SHORT).show();
-        }
-        return layout;
-    }
-
-    // Activity 가 onCreate 된다.
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //액티비티가 처음 생성될 때 실행되는 함수
-        MapsInitializer.initialize(getActivity().getApplicationContext());
-
+        MapsInitializer.initialize(getApplicationContext());
         if(mapView != null)
             mapView.onCreate(savedInstanceState);
     }
@@ -177,12 +137,9 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
     public void onResume() {
         super.onResume();
         mapView.onResume();
-        Toast.makeText(getActivity(), "In Resume API test1 : ",Toast.LENGTH_SHORT).show();
-        if ( googleApiClient != null){
-            Toast.makeText(getActivity(), "In Resume API test2 : "+googleApiClient.toString(),Toast.LENGTH_SHORT).show();
+
+        if ( googleApiClient != null)
             googleApiClient.connect();
-            //onMapReady();
- }
     }
 
     // Pause state. (Unavailable interact)
@@ -234,14 +191,12 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
     }
 
     private void buildGoogleApiClient() {
-        if(googleApiClient != null) {
+        if(googleApiClient != null)
             return;
-        }
 
-        googleApiClient = new GoogleApiClient.Builder(getActivity()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API).addApi(Places.PLACE_DETECTION_API).enableAutoManage(getActivity(),this).build();
+        googleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).
+        addApi(Places.GEO_DATA_API).addApi(Places.PLACE_DETECTION_API).enableAutoManage(this,this).build();
         googleApiClient.connect();
-        Toast.makeText(getActivity(), "Test0 : "+googleApiClient.toString(),Toast.LENGTH_LONG).show();
     }
 
     // 이 부분 코드 뜯어보기. 권한 설정 및 설정 세팅 관련 코드!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -252,7 +207,7 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
 
         //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에 지도의 초기위치를 서울로 이동
         setCurrentLocation(null, "위치정보 가져올 수 없음", "위치 퍼미션과 GPS 활성 여부 확인");
-        Toast.makeText(getActivity(),"Test 14",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"Test 14",Toast.LENGTH_SHORT).show();
         //나침반이 나타나도록 설정
         googleMap.getUiSettings().setCompassEnabled(true);
         // 매끄럽게 이동함
@@ -261,18 +216,17 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
         //  API 23 이상이면 런타임 퍼미션 처리 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 사용권한체크
-            int hasFineLocationPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+            int hasFineLocationPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION);
             if ( hasFineLocationPermission == PackageManager.PERMISSION_DENIED) {
                 //사용권한이 없을경우
                 //권한 재요청
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             } else {
                 //사용권한이 있는경우
                 if ( googleApiClient == null) {
-                    Toast.makeText(getActivity(),"Test 13",Toast.LENGTH_SHORT).show();
                     buildGoogleApiClient();
                 }
-                if ( ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                if ( ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                 {
                     googleMap.setMyLocationEnabled(true);
                 }
@@ -288,7 +242,7 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if ( !checkLocationServicesStatus()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("위치 서비스 비활성화");
             builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n" +
                     "위치 설정을 수정하십시오.");
@@ -316,7 +270,7 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
         locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
 
         if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if ( ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if ( ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
         } else {
@@ -344,7 +298,7 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
     }
 
     public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getApplication().getSystemService(Context.LOCATION_SERVICE);
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
@@ -408,14 +362,16 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
 
             // Save results of departure or destination data. (Location name, longitude, latitude)
-            final Button btn_Set = getActivity().findViewById(R.id.btn_Set);
+            final Button btn_Set =findViewById(R.id.btn_Set);
             btn_Set.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onMapListener.onMap(markerTitle, location.getLatitude(), location.getLongitude());
-                    //getFragmentManager().beginTransaction().addToBackStack("Map view").commit();
-                    //getFragmentManager().beginTransaction().hide(Map.this).commit();
-                    getFragmentManager().beginTransaction().remove(Map.this).commit();
+                    Intent intent = new Intent();
+                    intent.putExtra("Name",markerTitle);
+                    intent.putExtra("Latitude",location.getLatitude());
+                    intent.putExtra("Longitude",location.getLongitude());
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
             });
             return;
@@ -430,13 +386,5 @@ public class Map extends Fragment implements OnMapReadyCallback, GoogleApiClient
         currentMarker = this.googleMap.addMarker(markerOptions);
 
         this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(DEFAULT_LOCATION));
-    }
-
-    @Override
-    public void onDetach(){
-        super.onDetach();
-        onMapListener = null;
-
-        googleApiClient.disconnect();
     }
 }

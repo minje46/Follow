@@ -54,6 +54,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Map"
+        android:hardwareAccelerated="true">
+        <intent-filter>
+            <action android:name="android.intent.action.asd" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
         <service
             android:name=".WayService"
             android:enabled="true"
