@@ -1,16 +1,13 @@
 package com.jackpot.follow_init;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
+import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -19,42 +16,63 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-
 /**
  * Created by KWAK on 2018-05-23.
  */
 
-public class Schedule_setting extends AppCompatActivity {
+public class Schedule_setting extends AppCompatActivity implements Map.OnMapListener{
+//public class Schedule_setting extends AppCompatActivity implements asd.OnMapListener{
     // Database 객체 생성. (Firebase에서 schedule의 tree를 load.)
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference("Schedule");
 
-    Fragment1 F_map;                // Map Fragment 생성.
-    obj_schedule data;
-    public Schedule_setting(){
-    }
+    EditText inEvent;
+    EditText inDept;
+    EditText inDest;
+    TimePicker startTime;
+    TimePicker endTime;
 
+    Map F_map;               // Map Fragment 생성.
+  //  asd F_map;
+    obj_schedule data;
+
+    int set_code = 0;        // code 0 - set result to departure / code 1 - set result to destination.
+
+    public Schedule_setting(){}
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedule_setting);
 
-        F_map = new Fragment1();
+        F_map = new Map();
+      //  F_map = new asd();
         data = new obj_schedule();
 
         // XML의 widget에 접근하기 위한 구체화.
-        final EditText inEvent = findViewById(R.id.inEvent);
-        final EditText inDept = findViewById(R.id.inDept);
-        final EditText inDest = findViewById(R.id.inDest);
-        final TimePicker startTime = findViewById(R.id.startTime);
-        final TimePicker endTime = findViewById(R.id.endTime);
+        inEvent = findViewById(R.id.inEvent);
+        inDept = findViewById(R.id.inDept);
+        inDest = findViewById(R.id.inDest);
+        startTime = findViewById(R.id.startTime);
+        endTime = findViewById(R.id.endTime);
         Button btnDept = findViewById(R.id.btnDept);
         Button btnDest = findViewById(R.id.btnDest);
         Button btnCancle = findViewById(R.id.btnCancle);
         Button btnSave = findViewById(R.id.btnSave);
+
+        btnDept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.schedule_setting_main, F_map).commit();
+            }
+        });
+
+        btnDest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.schedule_setting_main, F_map).commit();
+            }
+        });
 
         btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +89,7 @@ public class Schedule_setting extends AppCompatActivity {
 
                 // 객체에 이름, 출발, 도착지 저장.
                 data.setEvent_name(inEvent.getText().toString());
-                //data.setDept_name(inDept.getText().toString());
+                data.setDept_name(inDept.getText().toString());
                 data.setDest_name(inDest.getText().toString());
 
                 // 객체에 time 저장.
@@ -83,31 +101,26 @@ public class Schedule_setting extends AppCompatActivity {
                 // 객체를 DB에 저장.
                 // databaseReference.child(data.getEvent_name()).setValue(data);
                 DatabaseReference dr = FirebaseDatabase.getInstance().getReference();
-                dr.child("Schedule").push().setValue(data);
-
+                //dr.child("Schedule").push().setValue(data);
                 Toast.makeText(getApplicationContext(), data.getEvent_name() +" schedule is saved", Toast.LENGTH_SHORT).show();
+
+                Bundle send = new Bundle();
+//                send.putSerializable("FromSetting",data);
                 finish();
             }
         });
+    }
 
-        btnDept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.schedule_setting_main, F_map).commit();
-
-
-                //data.setDept_name(inDept.getText().toString());
-                //data.setDept_latitude();
-                //data.setDept_longitude();
-            }
-        });
-
-        btnDest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.schedule_setting_main, F_map).commit();
-            }
-        });
+    @Override
+    public void onMap(String name, double lati, double longi){
+        if(set_code == 0){
+            inDept.setText(name);
+            set_code = 1;
+        } else {
+            inDest.setText(name);
+            set_code = 0;
+        }
+        Toast.makeText(this, "Name : "+name +"\nLatitude : "+lati +"\nLongitude : "+longi , Toast.LENGTH_SHORT).show();
     }
 
     /*

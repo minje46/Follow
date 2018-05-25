@@ -1,24 +1,18 @@
 package com.jackpot.follow_init;
 
 import android.content.Intent;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -27,7 +21,7 @@ public class MainActivity extends AppCompatActivity{
     Tab_calendar F_calendar;        // Calendar Fragment 생성.
     Tab_alarm F_alarm;              // Alarm Fragment 생성.
     Tab_setting F_setting;          // Setting Fragment 생성.
-    Fragment1 F_map;                // Map Fragment 생성.
+    Map F_map;                // Map Fragment 생성.
     Fragment2 F_search;             // Odsay Fragment 생성.
 
 //    public int turn_Service = 0;
@@ -61,7 +55,7 @@ public class MainActivity extends AppCompatActivity{
         F_calendar = new Tab_calendar();
         F_alarm = new Tab_alarm();
         F_setting = new Tab_setting();
-        F_map = new Fragment1();
+        F_map = new Map();
         F_search = new Fragment2();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, F_schedule).commit();
@@ -102,7 +96,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -112,9 +105,26 @@ public class MainActivity extends AppCompatActivity{
                 //Log.d("Test DB 0", id);
 
 
-                Log.d("Test DB 1",dataSnapshot.getValue().toString());
+                Log.d("DBTESTING 1",dataSnapshot.getValue().toString());
                 get_data = dataSnapshot.getValue(obj_schedule.class);
-                Log.d("Test DB 2", get_data.getDept_name() + "\n\n" + get_data.getEvent_name());
+                Log.d("DBTESTING 2", get_data.getDept_name() + "22\n"+get_data.getEnd_hour() + "33\n" + get_data.getEvent_name());
+
+                // 디비에서 read 한 data가 get_data에 저장되는데, 현재는 위도,경도 값 없으니까, 임의로 수동 저장.
+                get_data.setDept_latitude(37.4507452);
+                get_data.setDept_longitude(127.1288474);
+                get_data.setDest_latitude(37.478688);
+                get_data.setDept_longitude(127.126174999999);
+                Log.d("DBTESTING 333333", String.valueOf(get_data.getDept_latitude()));
+                // Intent 생성 후, 값 저장하고 service 호출.
+                Intent check = new Intent(getApplication(),WayService.class);
+                check.putExtra("check", 1);
+                check.putExtra("dept_latitude",dept_latitude);
+                check.putExtra("dept_longitude",dept_longitude);
+                check.putExtra("dest_latitude",dest_latitude);
+                check.putExtra("dest_longitude",dest_longitude);
+
+             //   startService(check);
+                Log.d("Service test","It is after call service again");
             }
 
             @Override
@@ -156,7 +166,7 @@ public class MainActivity extends AppCompatActivity{
         check.putExtra("dest_latitude",dest_latitude);
         check.putExtra("dest_longitude",dest_longitude);
         Log.d("Service test","It came to go search method");
-        startService(check);
+       // startService(check);
         Log.d("Service test","It is after call service again");
     }
 

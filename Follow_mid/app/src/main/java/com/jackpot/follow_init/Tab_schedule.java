@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +36,7 @@ import java.util.List;
  */
 
 public class Tab_schedule extends Fragment implements View.OnClickListener{
-    private View mView, btnMode;
+    private View mView;
     private TimeTableView timeTable;
     private FloatingActionButton fab;
 
@@ -41,7 +44,7 @@ public class Tab_schedule extends Fragment implements View.OnClickListener{
 
     private List<String> mTitles = Arrays.asList("Korean", "English", "Math", "Science", "Physics", "Chemistry", "Biology");
     private List<String> mLongHeaders = Arrays.asList("/","Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
-    private List<String> mShortHeaders = Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+   // private List<String> mShortHeaders = Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
 
     private long mNow = 0;
 
@@ -55,6 +58,24 @@ public class Tab_schedule extends Fragment implements View.OnClickListener{
         initListener();
         initData();
         fab.setOnClickListener(this);
+
+        Button button = mView.findViewById(R.id.set);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int color =R.color.black;
+                int textColor = R.color.black;
+
+                ArrayList<TimeTableData> tables = new ArrayList<>();
+                ArrayList<TimeData> values = new ArrayList<>();
+
+                TimeData timeData = new TimeData(1, "Study", color, textColor, 11-40, 5-00);
+                values.add(timeData);
+
+                tables.add(new TimeTableData("1", values));
+            }
+        });
         return mView;
     }
 
@@ -66,7 +87,7 @@ public class Tab_schedule extends Fragment implements View.OnClickListener{
         timeTable.setShowHeader(false);
         timeTable.setTableMode(TimeTableView.TableMode.LONG);
         //timeTable.setTimeTable(getMillis("2017-11-10 00:0000"), mShortSamples);
-        timeTable.setTimeTable(mNow, getSamples(mNow, mShortHeaders, mTitles));
+       // timeTable.setTimeTable(mNow, getSamples(mNow, mShortHeaders, mTitles));
 
 
         timeTable.setOnTimeItemClickListener(new TimeTableItemViewHolder.OnTimeItemClickListener() {
@@ -96,6 +117,35 @@ public class Tab_schedule extends Fragment implements View.OnClickListener{
         ArrayList<TimeTableData> tables = new ArrayList<>();
         for (int i = 0; i < headers.size(); i++) {
             ArrayList<TimeData> values = new ArrayList<>();
+            // start 랑 end 지워도 됨.
+            //DateTime start = new DateTime(date);
+           // DateTime end = start.plusMinutes((int) ((Math.random() * 10) + 1) * 30);
+            for (int j = 0; j < titles.size(); j++) {
+                int color = colors_table_light.getResourceId(j, 0);
+                int textColor = R.color.black;
+
+                TimeData timeData = new TimeData(j, "Study", color, textColor, 11-40, 5-00);
+
+                //TEST
+                if (headers.size() == 2 && j == 2) {
+                    timeData.setShowError(true);
+                }
+                values.add(timeData);
+            }
+
+            tables.add(new TimeTableData(headers.get(i), values));
+        }
+        return tables;
+    }
+
+    /*
+    private ArrayList<TimeTableData> getSamples(long date, List<String> headers, List<String> titles) {
+        TypedArray colors_table = getResources().obtainTypedArray(R.array.colors_table);
+        TypedArray colors_table_light = getResources().obtainTypedArray(R.array.colors_table_light);
+
+        ArrayList<TimeTableData> tables = new ArrayList<>();
+        for (int i = 0; i < headers.size(); i++) {
+            ArrayList<TimeData> values = new ArrayList<>();
             DateTime start = new DateTime(date);
             DateTime end = start.plusMinutes((int) ((Math.random() * 10) + 1) * 30);
             for (int j = 0; j < titles.size(); j++) {
@@ -115,14 +165,15 @@ public class Tab_schedule extends Fragment implements View.OnClickListener{
                 }
                 values.add(timeData);
 
-                /*start = end.plusMinutes((int) ((Math.random() * 10) + 1) * 10);
-                end = start.plusMinutes((int) ((Math.random() * 10) + 1) * 30);*/
+                //start = end.plusMinutes((int) ((Math.random() * 10) + 1) * 10);
+                //end = start.plusMinutes((int) ((Math.random() * 10) + 1) * 30);
             }
 
             tables.add(new TimeTableData(headers.get(i), values));
         }
         return tables;
     }
+    */
 
 
     // =============================================================================
@@ -141,16 +192,9 @@ public class Tab_schedule extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.plus:
-                /*
-                Bundle args = new Bundle();
-                args.putString("key", "value");
 
-                FragmentDialog dialog = new FragmentDialog();
-                dialog.setArguments(args);
-                dialog.show(getActivity().getSupportFragmentManager(), "tag");
-                break;
-                */
                 startActivity(new Intent(getContext(), Schedule_setting.class));
         }
     }
 }
+

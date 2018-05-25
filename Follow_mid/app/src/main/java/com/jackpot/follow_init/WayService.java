@@ -49,9 +49,6 @@ public class WayService extends Service {
     private Double dest_latitude = 37.478688;
     private Double dest_longitude = 127.12617499999999;
 
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference("Schedule");
-
     public WayService() {
     }
 
@@ -106,7 +103,6 @@ public class WayService extends Service {
 
                 Log.d("Service Test - Type", String.valueOf(C_subPath.get(0).getInt("trafficType")));
                 Log.d("Service Test - Time", String.valueOf(C_subPath.get(0).getInt("sectionTime")));
-
                 Log.d("Service Test - BusNo", C_subPath.get(1).getJSONArray("lane").getJSONObject(0).getString("busNo").toString());
                 Log.d("Service Test - BusType", String.valueOf(C_subPath.get(1).getJSONArray("lane").getJSONObject(0).getInt("type")));
 
@@ -127,51 +123,15 @@ public class WayService extends Service {
         }
     };
     private void processCommand(Intent intent){
-
         odsayService = ODsayService.init(getApplicationContext(), getString(R.string.odsay_API_Key));
         odsayService.setReadTimeout(5000);
         odsayService.setConnectionTimeout(5000);
 
-        // DB
-        /*
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        Bundle bundle = intent.getExtras();
 
-                obj_schedule get_data = null;
-
-                // Push 고유키 값 가져오기.
-                String id = databaseReference.child("User").getKey();
-                Log.d("Test DB 0", id);
-
-                Log.d("Test DB 1",dataSnapshot.getValue().toString());
-                get_data = dataSnapshot.getValue(obj_schedule.class);
-
-                Log.d("Test DB 2", get_data.getDept_name() + "\n" + get_data.toString());
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-*/
-        odsayService.requestSearchPubTransPath(dept_longitude.toString(), dept_latitude.toString(), dest_longitude.toString(), dest_latitude.toString(),"0", "0", "0", onResultCallbackListener);
+        Log.d("DBTESTING 444", String.valueOf(bundle.getDouble("dept_longitude")));
+        //odsayService.requestSearchPubTransPath(dept_longitude.toString(), dept_latitude.toString(), dest_longitude.toString(), dest_latitude.toString(),"0", "0", "0", onResultCallbackListener);
+        odsayService.requestSearchPubTransPath(String.valueOf(bundle.getDouble("dept_longitude")), String.valueOf(bundle.getDouble("dept_latitude")), String.valueOf(bundle.getDouble("dest_longitude")), String.valueOf(bundle.getDouble("dest_latitude")), "0", "0", "0", onResultCallbackListener);
+        Log.d("DBTESTING 444", "Service is completed");
     }
-
 }

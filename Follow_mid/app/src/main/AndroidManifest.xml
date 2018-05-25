@@ -46,7 +46,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Schedule_setting">
+        <activity android:name=".Schedule_setting"
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.Schedule_Setting" />
                 <category android:name="android.intent.category.LAUNCHER" />
