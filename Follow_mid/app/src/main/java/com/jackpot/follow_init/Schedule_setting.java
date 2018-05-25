@@ -30,7 +30,7 @@ public class Schedule_setting extends AppCompatActivity{
     TimePicker startTime;
     TimePicker endTime;
 
-    obj_schedule data;
+    obj_schedule dataObj;
 
     int set_code = 0;        // code 0 - set result to departure / code 1 - set result to destination.
 
@@ -41,7 +41,7 @@ public class Schedule_setting extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.schedule_setting);
 
-        data = new obj_schedule();
+        dataObj = new obj_schedule();
 
         // XML의 widget에 접근하기 위한 구체화.
         inEvent = findViewById(R.id.inEvent);
@@ -82,15 +82,15 @@ public class Schedule_setting extends AppCompatActivity{
                 //obj_schedule data = new obj_schedule();
 
                 // 객체에 이름, 출발, 도착지 저장.
-                data.setEvent_name(inEvent.getText().toString());
-                data.setDept_name(inDept.getText().toString());
-                data.setDest_name(inDest.getText().toString());
+                dataObj.setEvent_name(inEvent.getText().toString());
+                dataObj.setDept_name(inDept.getText().toString());
+                dataObj.setDest_name(inDest.getText().toString());
 
                 // 객체에 time 저장.
-                data.setStart_hour(startTime.getHour());
-                data.setStart_minute(startTime.getMinute());
-                data.setEnd_hour(endTime.getHour());
-                data.setEnd_mintue(endTime.getMinute());
+                dataObj.setStart_hour(startTime.getHour());
+                dataObj.setStart_minute(startTime.getMinute());
+                dataObj.setEnd_hour(endTime.getHour());
+                dataObj.setEnd_mintue(endTime.getMinute());
 
                 // 객체를 DB에 저장.
                 // databaseReference.child(data.getEvent_name()).setValue(data);
@@ -119,7 +119,7 @@ public class Schedule_setting extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //g_intent = getIntent();
+
         if(set_code == 0){
             String name = data.getStringExtra("Name");
             inDept.setText(name);
@@ -128,6 +128,10 @@ public class Schedule_setting extends AppCompatActivity{
             Double latitude = data.getDoubleExtra("Latitude", 0);
             Double longitude = data.getDoubleExtra("Longitude", 0);
             Toast.makeText(getApplicationContext(),"Name : "+name +"\nLatitude : "+latitude +"\nLongitude : "+longitude,Toast.LENGTH_SHORT).show();
+
+            dataObj.setDept_name(name);
+            dataObj.setDest_latitude(latitude);
+            dataObj.setDept_longitude(longitude);
         } else {
             String name = data.getStringExtra("Name");
             inDest.setText(name);
@@ -136,6 +140,10 @@ public class Schedule_setting extends AppCompatActivity{
             Double latitude = data.getDoubleExtra("Latitude", 0);
             Double longitude = data.getDoubleExtra("Longitude", 0);
             Toast.makeText(getApplicationContext(),"Name : "+name +"\nLatitude : "+latitude +"\nLongitude : "+longitude,Toast.LENGTH_SHORT).show();
+
+            dataObj.setDest_name(name);
+            dataObj.setDest_latitude(latitude);
+            dataObj.setDest_longitude(longitude);
         }
     }
 }

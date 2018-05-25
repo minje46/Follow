@@ -12,18 +12,11 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.InflateException;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,14 +37,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;import android.Manifest;
-//import android.location.LocationListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 /**
  * Created by KWAK on 2018-05-14.
@@ -78,7 +68,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
 
     public Map(){}
 
-    // Fragment initialize.
+    // Activity initialize.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +106,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
         btn_Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setResult(RESULT_CANCELED, getIntent());
                 finish();
             }
         });
@@ -207,7 +198,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
 
         //런타임 퍼미션 요청 대화상자나 GPS 활성 요청 대화상자 보이기전에 지도의 초기위치를 서울로 이동
         setCurrentLocation(null, "위치정보 가져올 수 없음", "위치 퍼미션과 GPS 활성 여부 확인");
-        Toast.makeText(getApplicationContext(),"Test 14",Toast.LENGTH_SHORT).show();
         //나침반이 나타나도록 설정
         googleMap.getUiSettings().setCompassEnabled(true);
         // 매끄럽게 이동함
