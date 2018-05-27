@@ -69,7 +69,7 @@ public class FragmentDialog extends DialogFragment {
         Bundle args = getArguments();
         String value = args.getString("key");
 
-        fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.plus);
+        fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.btnAdd);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override

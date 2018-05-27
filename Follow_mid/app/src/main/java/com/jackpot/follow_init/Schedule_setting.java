@@ -96,7 +96,7 @@ public class Schedule_setting extends AppCompatActivity{
                 // databaseReference.child(data.getEvent_name()).setValue(data);
                 DatabaseReference dr = FirebaseDatabase.getInstance().getReference();
                 //dr.child("Schedule").push().setValue(data);
-                Toast.makeText(getApplicationContext(), data.getEvent_name() +" schedule is saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), dataObj.getEvent_name() +" schedule is saved", Toast.LENGTH_SHORT).show();
 
                 Bundle send = new Bundle();
 //                send.putSerializable("FromSetting",data);
