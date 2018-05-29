@@ -1,31 +1,35 @@
 package com.jackpot.follow_init;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by KWAK on 2018-05-14.
  */
 public class Tab_schedule extends Fragment {
+
     private TimeTableView mTimaTableView;
     private List<TimeTableModel> mList;
     private FloatingActionButton btnAdd;
+    private Obj_schedule fromMain = new Obj_schedule();
+    private int id = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,47 +37,59 @@ public class Tab_schedule extends Fragment {
 
         mList = new ArrayList<TimeTableModel>();
         mTimaTableView = (TimeTableView) rootView.findViewById(R.id.main_timetable_ly);
-        addList();
-        mTimaTableView.setTimeTable(mList);
+
         btnAdd = rootView.findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v.getId() == R.id.btnAdd)
-                    startActivity(new Intent(getContext(), Schedule_setting.class));
+                if (v.getId() == R.id.btnAdd) {
+                    startActivityForResult(new Intent(getContext(), Schedule_setting.class), 1);
+                }
             }
         });
+
+        mTimaTableView.setTimeTable(mList);
 
         return rootView;
     }
 
-    private void addList() {
-        mList.add(new TimeTableModel(0, 1, 2, 1, "8:20", "10:10", "财务报表分析",
-                "王老师", "1", "2-13"));
-        mList.add(new TimeTableModel(0, 3, 4, 1, "8:20", "10:10", "审计实务",
-                "李老师", "2", "2-13"));
-        mList.add(new TimeTableModel(0, 6, 7, 1, "8:20", "10:10", "市场营销实务",
-                "王", "3", "2-13"));
 
+    private void addList(Obj_schedule object) {
+        mList.add(new TimeTableModel(id, object.getStart_hour(), object.getEnd_hour(), 1, "8:20", "10:10", object.getEvent_name(),
+                "이주형", "IT 대학", "2-13"));
+        id++;
+    }
 
-        mList.add(new TimeTableModel(0, 6, 7, 2, "8:20", "10:10", "财务管理实务",
-                "老师1", "4", "2-13"));
-        mList.add(new TimeTableModel(0, 8, 9, 2, "8:20", "10:10", "财务报表分析",
-                "老师2", "5", "2-13"));
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Data", "data3");
+        Bundle extra = getArguments();
+        if(extra!=null) {
+            Log.d("Data", "data4");
+            fromMain = (Obj_schedule) extra.getSerializable("object");
+            addList(fromMain);
+//            mTimaTableView.setTimeTable(mList);
+            Log.d("Data", "data5");
+        }
+    }
 
-        mList.add(new TimeTableModel(0, 1, 2, 3, "8:20", "10:10", "审计实务",
-                "老师3", "6", "2-13"));
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        mList.add(new TimeTableModel(0, 6, 7, 3, "8:20", "10:10", "管理会计实务",
-                "老师4", "7", "2-13"));
-        mList.add(new TimeTableModel(0, 8, 9, 4, "8:20", "10:10", "管理会计实务",
-                "老师5", "9", "2-13"));
-        mList.add(new TimeTableModel(0, 3, 5, 4, "8:20", "10:10", "财务管理实务",
-                "老师4", "8", "2-13"));
-        mList.add(new TimeTableModel(0, 6, 8, 5, "8:20", "10:10", "证券投资分析",
-                "老师7", "11", "2-13"));
-        mList.add(new TimeTableModel(0, 3, 5, 5, "8:20", "10:10", "税务筹划",
-                "老师6", "10", "2-13"));
+        Toast.makeText(getActivity(), "22Event name : ",Toast.LENGTH_SHORT).show();
 
+        if (data != null) {
+            // get data from Schedule setting.
+
+            Bundle get_bundle = data.getExtras();
+
+            if (get_bundle != null) {
+                Obj_schedule get_data = (Obj_schedule) get_bundle.getSerializable("object");
+
+                Toast.makeText(getActivity(), "33Event name : "+get_data.getEvent_name()+"\nDept name : "+get_data.getDept_name()+"\nDept_lati : "+get_data.getDept_latitude(),Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

@@ -31,27 +31,27 @@ public class TimeTableView extends LinearLayout {
             R.drawable.select_label_se, R.drawable.select_label_yiw,
             R.drawable.select_label_sy, R.drawable.select_label_yiwu,
             R.drawable.select_label_yi, R.drawable.select_label_wuw};
-    private final static int START = 0;
-    //最大节数
-    public final static int MAXNUM = 12;
-    //显示到星期几
-    public final static int WEEKNUM = 7;
+    private final static int START = 1;
+    //最大节数  1달에 수업 최대 갯수?
+    public final static int MAXNUM = 24;
+    //显示到星期几    보통 5일동안의 수업 weekend
+    public final static int WEEKNUM = 5;
     /**
-     * 单个View高度
+     * 单个View高度 한 column당 view 높이? 갯수?(고도)
      */
     private final static int TIME_TABLE_HEIGHT = 50;
     /**
-     * 线的高度
+     * 线的高度    선의 높이
      */
     private final static int TIME_TABLE_LINE_HEIGHT = 2;
     private final static int LEFT_TITLE_WIDTH = 20;
     private final static int WEEK_TITLE_HEIGHT = 30;
     /**
-     * 第一行的星期显示
+     * 第一行的星期显示 //달력에서 맨 첫째날 정의
      */
     private LinearLayout mHorizontalWeekLayout;
     private LinearLayout mVerticalWeekLaout;
-    private String[] mWeekTitle = {"一", "二", "三", "四", "五", "六", "七"};
+    private String[] mWeekTitle = {"Mon", "Tue", "Wed", "Thu", "Fri"};
     public static String[] colorStr = new String[20];
     int colorNum = 0;
     private List<TimeTableModel> mListTimeTable = new ArrayList<TimeTableModel>();
@@ -73,7 +73,7 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 横的分界线
+     * 横的分界线   가로선
      *
      * @return
      */
@@ -140,10 +140,10 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 遍历出星期1~7的课表
+     * 遍历出星期1~7的课表     월~일요일까지 출력
      * 再进行排序
      *
-     * @param week 星期
+     * @param week 星期   요일
      */
     @NonNull
     private List<TimeTableModel> findWeekClassList(int week) {
@@ -177,16 +177,16 @@ public class TimeTableView extends LinearLayout {
 
 
     private void layoutLeftNumber() {
-        //课表出的0,0格子 空白的
+        //课表出的0,0格子 空白的   시간표 시작은 0부터 공백
         TextView mTime = new TextView(mContext);
         mTime.setLayoutParams(new ViewGroup.LayoutParams(dip2px(LEFT_TITLE_WIDTH), dip2px(WEEK_TITLE_HEIGHT)));
         mHorizontalWeekLayout.addView(mTime);
 
-        //绘制1~MAXNUM
+        //绘制1~MAXNUM   1~ max까지 제작
         LinearLayout numberView = new LinearLayout(mContext);
         numberView.setLayoutParams(new ViewGroup.LayoutParams(dip2px(LEFT_TITLE_WIDTH), dip2px(MAXNUM * TIME_TABLE_HEIGHT) + MAXNUM * 2));
         numberView.setOrientation(VERTICAL);
-        for (int j = 1; j <= MAXNUM; j++) {
+        for (int j = START; j <= MAXNUM; j++) {
             TextView number = createNumberView(j);
             numberView.addView(number);
             numberView.addView(getWeekHorizontalLine());
@@ -211,11 +211,11 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 绘制空白
+     * 绘制空白   공백제작
      *
-     * @param count 数量
-     * @param week  星期
-     * @param start 用着计算下标
+     * @param count 数量   수량
+     * @param week  星期   요일
+     * @param start 用着计算下标   사용되는 계산아래에서
      */
     private View addBlankView(int count, final int week, final int start) {
         LinearLayout blank = new LinearLayout(getContext());
@@ -230,7 +230,7 @@ public class TimeTableView extends LinearLayout {
             classView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "星期" + week + "第" + (start + num) + "节", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(), "星期" + week + "第" + (start + num) + "节", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -239,10 +239,10 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 星期一到星期天的课表
+     * 星期一到星期天的课表   월요일부터 일요일까지의 시간표
      *
-     * @param weekList 每天的课程列表
-     * @param week     周
+     * @param weekList 每天的课程列表      daily 커리큘럼리스트
+     * @param week     周   주말
      */
     private LinearLayout createWeekTimeTableView(List<TimeTableModel> weekList, int week) {
         LinearLayout weekTableView = new LinearLayout(getContext());
@@ -272,9 +272,9 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 获取单个课表View 也可以自定义我这个
+     * 获取单个课表View 也可以自定义我这个 한개의 시간표 view를 획득, 자신이 정의 내릴수도 있음?
      *
-     * @param model 数据类型
+     * @param model 数据类型  data type
      * @return
      */
     @SuppressWarnings("deprecation")
@@ -308,7 +308,7 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 转换dp
+     * 转换dp   dp 전환
      *
      * @param dpValue
      * @return
@@ -328,7 +328,7 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 输入课表名循环判断是否数组存在该课表 如果存在输出true并退出循环 如果不存在则存入colorSt[20]数组
+     * 输入课表名循环判断是否数组存在该课表 如果存在输出true并退出循环 如果不存在则存入colorSt[20]数组   과목명 입력되면 뭐가 출력된다는데...뭘까
      *
      * @param name
      */
@@ -349,7 +349,7 @@ public class TimeTableView extends LinearLayout {
     }
 
     /**
-     * 获取数组中的课程名
+     * 获取数组中的课程名  과목명의 배열 획득 아니 이런 단어 중국에서 쓸일이 어딧어 이사람아
      *
      * @param name
      * @return

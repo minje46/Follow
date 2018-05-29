@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -23,8 +24,6 @@ public class MainActivity extends AppCompatActivity{
     Tab_setting F_setting;          // Setting Fragment 생성.
     Fragment2 F_search;             // Odsay Fragment 생성.
 
-//    public int turn_Service = 0;
-
     public int turn_Service = 1;
 
     private Double dept_latitude = 0.0;
@@ -32,12 +31,10 @@ public class MainActivity extends AppCompatActivity{
     private Double dest_latitude = 0.0;
     private Double dest_longitude = 0.0;
 
-
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference("Schedule");
-    obj_schedule get_data;
 
-
+    Obj_schedule pass_data = new Obj_schedule();    // send data to Tab_schedule.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +52,11 @@ public class MainActivity extends AppCompatActivity{
         F_alarm = new Tab_alarm();
         F_setting = new Tab_setting();
         F_search = new Fragment2();
+
+        Intent intent = getIntent();            // get data from Schedule setting in bundle.
+        pass_data = (Obj_schedule)intent.getSerializableExtra("object");
+
+        Tab_schedule tab_schedule = new Tab_schedule();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, F_schedule).commit();
 
@@ -93,6 +95,8 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        // DB listener code 부분.
+        /*
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -103,7 +107,7 @@ public class MainActivity extends AppCompatActivity{
 
 
                 Log.d("DBTESTING 1",dataSnapshot.getValue().toString());
-                get_data = dataSnapshot.getValue(obj_schedule.class);
+                get_data = dataSnapshot.getValue(Obj_schedule.class);
                 Log.d("DBTESTING 2", get_data.getDept_name() + "22\n"+get_data.getEnd_hour() + "33\n" + get_data.getEvent_name());
 
                 // 디비에서 read 한 data가 get_data에 저장되는데, 현재는 위도,경도 값 없으니까, 임의로 수동 저장.
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity{
                 get_data.setDest_latitude(37.478688);
                 get_data.setDept_longitude(127.126174999999);
                 Log.d("DBTESTING 333333", String.valueOf(get_data.getDept_latitude()));
+
                 // Intent 생성 후, 값 저장하고 service 호출.
                 Intent check = new Intent(getApplication(),WayService.class);
                 check.putExtra("check", 1);
@@ -144,11 +149,34 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
-
-
+*/
         startService(new Intent(getApplication(),WayService.class));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // get data from Schedule setting.
+        /*
+        Bundle get_bundle = getIntent().getExtras();
+        Bundle pass_bundle = new Bundle();
+
+        if(get_bundle!=null) {
+            Obj_schedule get_data = (Obj_schedule) get_bundle.getSerializable("object");
+            Tab_schedule fragment_TS = (Tab_schedule)getSupportFragmentManager().findFragmentById(R.id.container);
+
+            Toast.makeText(this, get_data.getDept_name(), Toast.LENGTH_SHORT).show();
+
+            pass_bundle.putSerializable("object", get_data);
+            fragment_TS.setArguments(pass_bundle);
+            Log.d("Data", "data2");
+        }
+        */
+    }
+
+
+    // 여기서부터 지워도 될듯.
     public void goSearch(){
         Intent check = new Intent(getApplication(),WayService.class);
         check.putExtra("check", 1);
@@ -160,45 +188,4 @@ public class MainActivity extends AppCompatActivity{
        // startService(check);
         Log.d("Service test","It is after call service again");
     }
-
-        public void setDept(Double x, Double y){
-            dept_latitude = x;
-            dept_longitude = y;
-            Log.d("Dept_Coordinate in Main", String.valueOf(dept_latitude) +"\n" +String.valueOf(dept_longitude));
-
-
-            Fragment send_frag = new Fragment2();
-            Bundle send_bund = new Bundle();
-            send_bund.putDouble("dept_latitude",dept_latitude);
-            send_bund.putDouble("dept_longitude",dept_longitude);
-            send_frag.setArguments(send_bund);
-          }
-
-         public void setDest(Double x, Double y){
-         dest_latitude = x;
-         dest_longitude = y;
-         Log.d("Dest_Coordinate in Main", String.valueOf(dest_latitude) +"\n" +String.valueOf(dest_longitude));
-
-         Fragment2 send_frag = new Fragment2();
-         Bundle send_bund = new Bundle();
-         send_bund.putDouble("dest_latitude",dest_latitude);
-         send_bund.putDouble("dest_longitude",dest_longitude);
-         send_frag.setArguments(send_bund);
-         }
-
-         public Double getDept_latitude(){
-             return dept_latitude;
-         }
-
-         public Double getDept_longitude(){
-            return dept_longitude;
-         }
-
-         public Double getDest_latitude(){
-             return dest_latitude;
-         }
-
-         public Double getDest_longitude(){
-             return dest_longitude;
-         }
 }
