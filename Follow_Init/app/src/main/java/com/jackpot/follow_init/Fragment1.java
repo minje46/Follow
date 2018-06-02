@@ -66,6 +66,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * Created by KWAK on 2018-05-14.
@@ -92,13 +93,14 @@ public class Fragment1 extends Fragment implements OnMapReadyCallback, GoogleApi
     private LatLng[] LikelyLatLngs = null;
 
     private int set_code = 0;           // 0 = departure coordinate, 1 = destination coordinate
-    private Double dept_latitude;
-    private Double dept_longitude;
-    private Double dest_latitude;
-    private Double dest_longitude;
-
+    private Double dept_latitude = 0.0;
+    private Double dept_longitude = 0.0;
+    private Double dest_latitude = 0.0;
+    private Double dest_longitude = 0.0;
+    public int check = 0;
 
     public Fragment1(){ }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) { super.onCreate(savedInstanceState);}
@@ -136,6 +138,14 @@ public class Fragment1 extends Fragment implements OnMapReadyCallback, GoogleApi
             }
         });
 
+        Button btn_OK = layout.findViewById(R.id.btn_OK);
+        btn_OK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity ma = (MainActivity)getActivity();
+                ma.goSearch();
+            }
+        });
         return layout;
     }
 
@@ -385,10 +395,37 @@ public class Fragment1 extends Fragment implements OnMapReadyCallback, GoogleApi
                 dept_latitude = location.getLatitude();
                 dept_longitude = location.getLongitude();
                 set_code = 1;
+
+
+                final Button btn_Set = getActivity().findViewById(R.id.btn_Set);
+                btn_Set.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                                btn_Set.setText("Set Destination");
+                                MainActivity ma = (MainActivity)getActivity();
+                                ma.setDept(dept_latitude, dept_longitude);
+
+                        Log.d("Departure clicked?", String.valueOf(check));
+                        check++;
+                        }
+                });
+
             }else{
                 dest_latitude = location.getLatitude();
                 dest_longitude = location.getLongitude();
                 set_code = 0;
+
+                final Button btn_Set = getActivity().findViewById(R.id.btn_Set);
+                btn_Set.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        btn_Set.setText("Set Departure.");
+                        MainActivity ma = (MainActivity) getActivity();ma.setDest(dest_latitude, dest_longitude);
+
+                        Log.d("Destination clicked?", String.valueOf(check));
+                        check++;
+                    }
+                });
             }
 
             Log.d("Selected coordinate3", String.valueOf(location.getLatitude()) + "\n" + String.valueOf(location.getLongitude()));

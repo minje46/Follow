@@ -1,13 +1,38 @@
 package com.jackpot.follow_init;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+
+public class MainActivity extends AppCompatActivity{
 
     Toolbar toolbar;
     Tab_schedule F_schedule;        // Schedule Fragment 생성.
@@ -17,8 +42,21 @@ public class MainActivity extends AppCompatActivity {
     Fragment1 F_map;                // Map Fragment 생성.
     Fragment2 F_search;             // Odsay Fragment 생성.
 
-  //  private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-  //  private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    Data obj;
+    HashMap<String, Integer> hm = new HashMap<String, Integer>();
+    int alarmId = (int)System.currentTimeMillis();
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    AlarmData ad = new AlarmData();
+//    public int turn_Service = 0;
+
+    public int turn_Service = 1;
+
+    private Double dept_latitude = 0.0;
+    private Double dept_longitude = 0.0;
+    private Double dest_latitude = 0.0;
+    private Double dest_longitude = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
         F_setting = new Tab_setting();
         F_map = new Fragment1();
         F_search = new Fragment2();
+        obj = new Data(this);
+        ad = new AlarmData();
+        //rad = databaseReference.child("Alarm").child("Test1234").getDatabase();
+        //ad.setHour(1);
+        //databaseReference.child("userTest" + i).setValue(ad);
+
+        //getFragmentManager().beginTransaction().replace(R.id.container,fa).commit();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, F_schedule).commit();
 
@@ -58,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 else if(position == 1)
                     selected = F_calendar;
                 else if(position == 2)
-                    //selected = F_alarm;
-                    selected = F_search;
+                    selected = F_alarm;
+                    //selected = F_search;
                 else if(position == 3)
                    // selected = F_setting;
                     selected = F_map;
@@ -75,8 +120,112 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                ad = dataSnapshot.getValue(AlarmData.class);
+                Log.e("adadadad", ad.getEvent_name());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        startService(new Intent(getApplication(),WayService.class));
+    }
+
+    public void goSearch(){
+        Intent check = new Intent(getApplication(),WayService.class);
+        check.putExtra("check", 1);
+        check.putExtra("dept_latitude",dept_latitude);
+        check.putExtra("dept_longitude",dept_longitude);
+        check.putExtra("dest_latitude",dest_latitude);
+        check.putExtra("dest_longitude",dest_longitude);
+        Log.d("Service test","It came to go search method");
+        startService(check);
+        Log.d("Service test","It is after call service again");
+    }
         // DB이용.
         // databaseReference.child("message").push().setValue();
 
+    public void setDept(Double x, Double y){
+        dept_latitude = x;
+        dept_longitude = y;
+        Log.d("Dept_Coordinate in Main", String.valueOf(dept_latitude) +"\n" +String.valueOf(dept_longitude));
+
+        Fragment send_frag = new Fragment2();
+        Bundle send_bund = new Bundle();
+        send_bund.putDouble("dept_latitude",dept_latitude);
+        send_bund.putDouble("dept_longitude",dept_longitude);
+        send_frag.setArguments(send_bund);
+    }
+
+    public void setDest(Double x, Double y){
+        dest_latitude = x;
+        dest_longitude = y;
+        Log.d("Dest_Coordinate in Main", String.valueOf(dest_latitude) +"\n" +String.valueOf(dest_longitude));
+
+        Fragment2 send_frag = new Fragment2();
+        Bundle send_bund = new Bundle();
+        send_bund.putDouble("dest_latitude",dest_latitude);
+        send_bund.putDouble("dest_longitude",dest_longitude);
+        send_frag.setArguments(send_bund);
+    }
+
+    public Double getDept_latitude(){ return dept_latitude; }
+
+
+    public Double getDept_longitude(){
+            return dept_longitude;
+         }
+
+    public Double getDest_latitude(){
+             return dest_latitude;
+         }
+
+    public Double getDest_longitude(){
+             return dest_longitude;
+         }
+
+    public void setAlarm(Calendar targetcall, int alarmId){
+
+        Toast.makeText(this,"Alarm is set @ "+targetcall.getTime(),Toast.LENGTH_LONG).show();
+        Intent i = new Intent(getApplication(), MyReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(getApplication(), alarmId, i, 0);
+
+        AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP,targetcall.getTimeInMillis(), pi);
+
+        F_alarm = new Tab_alarm();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,F_alarm).commit();
+    }
+
+    public void deleteAlarm(int alarmId){
+        Intent i = new Intent(getApplication(), MyReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(getApplication(), alarmId, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        am.cancel(pi);
+        pi.cancel();
+
+        F_alarm = new Tab_alarm();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container,F_alarm).commit();
     }
 }
