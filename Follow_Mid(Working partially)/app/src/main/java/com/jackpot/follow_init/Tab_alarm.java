@@ -117,15 +117,14 @@ public class Tab_alarm extends Fragment {
     }
 
     // 자동 알람.
-    //public void setAlarm(Database_overall db, int alarmId, Context context) {
-    public void setAlarm(int alarmId, Context context) {
-        Log.e("데이터in자동알람", "진입 됨?");
+    public void setAlarm(Context context, int alarmId) {
+         Log.e("데이터in자동알람", "진입 됨?");
         double sec_time = 0;
 
         Calendar cal = Calendar.getInstance();
         int day_of_week = cal.get(Calendar.DAY_OF_WEEK); // 1.. 일요일, 2.. 월요일 , ... , 7.. 토요일
 
-        Database_overall db = Database_overall.getInstance(rootView.getContext());
+        Database_overall db = Database_overall.getInstance(context);
 
         Cursor c = db.Select();
         c.moveToLast();
@@ -139,7 +138,6 @@ public class Tab_alarm extends Fragment {
                 (c.getInt(c.getColumnIndex("str_min")) - (int) sec_minute), 00);
         Log.e("자동알람", "year: " + cal.get(Calendar.YEAR) + ", month: " + cal.get(Calendar.MONTH) + ", day: " + cal.get(Calendar.DAY_OF_MONTH) + ", hour: " + cal.get(Calendar.HOUR_OF_DAY) + ", minute: " + cal.get(Calendar.MINUTE));
 
-
 /*
         while(c.moveToNext()) {
             if (c.getInt(c.getColumnIndex("_id")) == alarmId) {
@@ -149,13 +147,11 @@ public class Tab_alarm extends Fragment {
         Log.e("데이터베이스in알람5", String.valueOf(sec_time));
         */
 
-
-        Toast.makeText(rootView.getContext(), "Alarm is set @ " + cal.getTime(), Toast.LENGTH_LONG).show();
-        Intent callReceiver = new Intent(rootView.getContext(), Alarm_receiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(rootView.getContext(), alarmId, callReceiver, 0);
-        AlarmManager alarmManager = (AlarmManager) rootView.getContext().getSystemService(Context.ALARM_SERVICE);
+        Toast.makeText(context, "Alarm is set @ " + cal.getTime(), Toast.LENGTH_LONG).show();
+        Intent callReceiver = new Intent(context, Alarm_receiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmId, callReceiver, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-
 
         alarmList = new String[c.getCount()];
         int count = 0;

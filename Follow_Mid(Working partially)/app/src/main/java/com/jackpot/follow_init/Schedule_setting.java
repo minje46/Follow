@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -81,8 +82,8 @@ public class Schedule_setting extends AppCompatActivity{
             }
         });
 
-        Button btnDept = findViewById(R.id.btnDept);
-        Button btnDest = findViewById(R.id.btnDest);
+        ImageButton btnDept = findViewById(R.id.btnDept);
+        ImageButton btnDest = findViewById(R.id.btnDest);
         Button btnCancel = findViewById(R.id.btnCancel);
         Button btnSave = findViewById(R.id.btnSave);
 

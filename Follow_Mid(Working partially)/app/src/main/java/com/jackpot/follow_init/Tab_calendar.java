@@ -56,7 +56,7 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
                     cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);        // 날짜 선택했을 때, 색 변경.
                 }
                 if (cellType == BaseCellView.OUTSIDE_MONTH) {
-                    cellView.setTextColor(getResources().getColor(R.color.date_outside_month_text_color_activity_1));
+                    cellView.setTextColor(getResources().getColor(R.color.white));
                 }
                 return cellView;
             }
@@ -181,9 +181,10 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
 
         ActionBar bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
-        bar.setDisplayHomeAsUpEnabled(true);
+        bar.setDisplayHomeAsUpEnabled(false);   //이게 화살표
         bar.setDisplayShowTitleEnabled(false);
-        bar.setDisplayShowCustomEnabled(true);
+        bar.setDisplayShowCustomEnabled(true); //이게 연 월 표시
+
 
         someTextView = new TextView(getActivity());
         someTextView.setTextColor(getActivity().getResources().getColor(R.color.title_text_color_activity_1));
@@ -198,8 +199,9 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
             }
         });
         bar.setCustomView(someTextView);
+        //여기가 캘린더 *월 ****년 적혀있는 부분
+        bar.setBackgroundDrawable(new ColorDrawable(getActivity().getResources().getColor(R.color.white)));
 
-        bar.setBackgroundDrawable(new ColorDrawable(getActivity().getResources().getColor(R.color.action_bar_color_activity_1)));
 
         //back button color
 //        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -253,4 +255,3 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
         }
     }
 }
-

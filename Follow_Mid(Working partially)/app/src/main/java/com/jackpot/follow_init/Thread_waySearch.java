@@ -140,7 +140,7 @@ public class Thread_waySearch extends Thread{
 
                 // 길찾기 완료 후, Tab_alarm 호출. (For setting alarm automatically)
 //                ((MainActivity)mContext).F_alarm.setAlarm(DB_helper, primaryKey, mContext);
-                ((MainActivity)mContext).F_alarm.setAlarm(primaryKey);
+                ((MainActivity)mContext).F_alarm.setAlarm(mContext, primaryKey);
                 // Test 다시 해보기. 몇개 결과값 JSON에서 제대로 안뽑아옴.
                 Log.d("Service Test tot_time ",String.valueOf(time));
                 Log.d("Service Test tot_dis ",String.valueOf(t_dis));

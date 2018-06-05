@@ -51,4 +51,13 @@ public class Alarm_playing extends AppCompatActivity {
         Intent i=new Intent(this, Alarm_service.class);
         stopService(i);
     }
+
+    // 알람 끄면 메인 액티비티 하나 더 켜져있음.
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i=new Intent(this, Alarm_service.class);
+        stopService(i);
+        finish();
+    }
 }
