@@ -117,12 +117,15 @@ public class Tab_alarm extends Fragment {
     }
 
     // 자동 알람.
-    public void setAlarm(Database_overall db, int alarmId, Context context) {
-    //public static void setAlarm(Database_overall db, int alarmId) {
+    //public void setAlarm(Database_overall db, int alarmId, Context context) {
+    public void setAlarm(int alarmId, Context context) {
+        Log.e("데이터in자동알람", "진입 됨?");
         double sec_time = 0;
 
         Calendar cal = Calendar.getInstance();
         int day_of_week = cal.get(Calendar.DAY_OF_WEEK); // 1.. 일요일, 2.. 월요일 , ... , 7.. 토요일
+
+        Database_overall db = Database_overall.getInstance(rootView.getContext());
 
         Cursor c = db.Select();
         c.moveToLast();
@@ -147,10 +150,10 @@ public class Tab_alarm extends Fragment {
         */
 
 
-        Toast.makeText(context, "Alarm is set @ " + cal.getTime(), Toast.LENGTH_LONG).show();
-        Intent callReceiver = new Intent(context, Alarm_receiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmId, callReceiver, 0);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Toast.makeText(rootView.getContext(), "Alarm is set @ " + cal.getTime(), Toast.LENGTH_LONG).show();
+        Intent callReceiver = new Intent(rootView.getContext(), Alarm_receiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(rootView.getContext(), alarmId, callReceiver, 0);
+        AlarmManager alarmManager = (AlarmManager) rootView.getContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
 

@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 else if(position == 3)
                     selected = F_setting;
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, selected).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, selected).commit();
             }
 
             @Override

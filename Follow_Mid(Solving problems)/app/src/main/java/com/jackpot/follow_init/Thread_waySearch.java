@@ -138,11 +138,9 @@ public class Thread_waySearch extends Thread{
                 Cursor cursor = DB_helper.Select();
                 cursor.moveToLast();
 
-                //Tab_alarm.setAlarm(database_overall, primaryKey);
                 // 길찾기 완료 후, Tab_alarm 호출. (For setting alarm automatically)
-                Tab_alarm ta = new Tab_alarm();
-                ta.setAlarm(DB_helper, primaryKey, mContext);
-
+//                ((MainActivity)mContext).F_alarm.setAlarm(DB_helper, primaryKey, mContext);
+                ((MainActivity)mContext).F_alarm.setAlarm(primaryKey);
                 // Test 다시 해보기. 몇개 결과값 JSON에서 제대로 안뽑아옴.
                 Log.d("Service Test tot_time ",String.valueOf(time));
                 Log.d("Service Test tot_dis ",String.valueOf(t_dis));
@@ -159,6 +157,7 @@ public class Thread_waySearch extends Thread{
                     Log.d("Service Test  compare",busType.get(C_subPath.get(1).getJSONArray("lane").getJSONObject(0).getInt("type")));
                 else
                     Log.d("Service Test compare", "Not exist");
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
