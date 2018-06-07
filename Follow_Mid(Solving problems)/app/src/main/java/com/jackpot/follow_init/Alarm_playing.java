@@ -3,6 +3,7 @@ package com.jackpot.follow_init;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -20,7 +21,6 @@ public class Alarm_playing extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_playing);
-
         TextView tv=(TextView)findViewById(R.id.textView2);
         Calendar now= Calendar.getInstance();
         int hour=now.get(Calendar.HOUR_OF_DAY);
@@ -45,6 +45,7 @@ public class Alarm_playing extends AppCompatActivity {
         Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         assert image != null;
         image.startAnimation(animation1);
+
     }
 
     // stop버튼 클릭

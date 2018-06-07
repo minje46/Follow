@@ -81,6 +81,11 @@ public class Alarm_setting extends AppCompatActivity { // Main3Activity
                 }
             }
         });
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

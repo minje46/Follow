@@ -120,7 +120,7 @@ public class Tab_alarm extends Fragment {
     }
 
     // 프래그먼트 갱신
-    private void refresh() {
+    public void refresh() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.detach(this).attach(this).commit();
     }
@@ -278,6 +278,7 @@ public class Tab_alarm extends Fragment {
 
         Toast.makeText(context, "Alarm is set @ " + cal.getTime(), Toast.LENGTH_LONG).show();
         Intent callReceiver = new Intent(context, Alarm_receiver.class);
+        callReceiver.putExtra("id", alarmId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmId, callReceiver, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
@@ -288,6 +289,7 @@ public class Tab_alarm extends Fragment {
         Toast.makeText(getActivity(),"Alarm is set @ "+targetcall.getTime(),Toast.LENGTH_LONG).show();
         Intent callReceiver = new Intent(getContext(), Alarm_receiver.class);
         callReceiver.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        callReceiver.putExtra("id", alarmId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), alarmId, callReceiver, 0);
         AlarmManager alarmManager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP,targetcall.getTimeInMillis(), pendingIntent);
@@ -375,10 +377,8 @@ public class Tab_alarm extends Fragment {
                 c.moveToLast();
                 setAlarm((Calendar) data.getExtras().getSerializable("Calendar"), c.getInt(c.getColumnIndex("_id")));
 
-
             }
             else {} // event_name이 null일때 처리 해줘야함.
         }
     }
-
 }
