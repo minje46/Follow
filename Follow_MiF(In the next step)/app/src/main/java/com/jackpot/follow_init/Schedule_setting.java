@@ -150,14 +150,16 @@ public class Schedule_setting extends AppCompatActivity{
             };
         });
 
-        Button checkBox = findViewById(R.id.checkAlarm);
+        final CheckBox checkBox = findViewById(R.id.checkAlarm);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alarm_check = 1;
+                if(checkBox.isChecked())
+                    alarm_check = 1;
+                else
+                    alarm_check = 0;
             }
         });
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

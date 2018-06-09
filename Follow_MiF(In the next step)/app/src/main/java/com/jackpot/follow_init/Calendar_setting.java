@@ -12,6 +12,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -48,14 +49,11 @@ public class Calendar_setting extends AppCompatActivity{
         inEvent = findViewById(R.id.inEvent);
         inDept = findViewById(R.id.inDept);
         inDest = findViewById(R.id.inDest);
-        /*startTime = findViewById(R.id.startTime);
-        endTime = findViewById(R.id.endTime);*/
 
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
 
         Toast.makeText(getApplicationContext(),"Year : "+bundle.getInt("year")+"\nday : "+bundle.getInt("day"),Toast.LENGTH_LONG).show();
-
 
         ImageButton btnDept = findViewById(R.id.btnDept);
         ImageButton btnDest = findViewById(R.id.btnDest);
@@ -71,8 +69,6 @@ public class Calendar_setting extends AppCompatActivity{
         year.setText(String.valueOf(bundle.getInt("year")));
         month.setText(String.valueOf(bundle.getInt("month")+1));
         day.setText(String.valueOf(bundle.getInt("day")));
-
-
 
         btnDept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,11 +113,14 @@ public class Calendar_setting extends AppCompatActivity{
             };
         });
 
-        Button checkBox = findViewById(R.id.checkAlarm);
+        final CheckBox checkBox = findViewById(R.id.checkAlarm);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alarm_check = 1;
+                if(checkBox.isChecked())
+                    alarm_check = 1;
+                else
+                    alarm_check = 0;
             }
         });
 

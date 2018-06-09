@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,9 +245,12 @@ public class Tab_alarm extends Fragment {
         callReceiver.putExtra("id", alarmId);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, alarmId, callReceiver, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        //alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+        //alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);      // 일주일 간격 없는 셋팅.
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), (long)24*60*60*1000*7, pendingIntent);  // 일주일 간격.
         cursor.close();
+
+        // Store alarm hour and minute to DB.
+        storeDB(String.valueOf(alarmId), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
         setList();
     }
 
@@ -275,6 +280,8 @@ public class Tab_alarm extends Fragment {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
+        // Store alarm hour and minute to DB.
+        storeDB(String.valueOf(alarmId), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
         setList();
     }
 
@@ -286,54 +293,72 @@ public class Tab_alarm extends Fragment {
         Cursor cursor = mainActivity.DB_helper.Select();
         while (cursor.moveToNext()) {
             if (cursor.getInt(cursor.getColumnIndex("ala_code")) == 1) {
-                if (cursor.getInt(cursor.getColumnIndex("year")) == 0) {  // It is for separating between calendar and schedule from DB.
-                    // weekday 를 숫자로 박아놈.
-                    if(cursor.getInt(cursor.getColumnIndex("weekday"))==1) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "월요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    }else if(cursor.getInt(cursor.getColumnIndex("weekday"))==2) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "화요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==3) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "수요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==4) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "목요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==5) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "금요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    }
-
-                    count++;
-                } else {     // 캘린더 + 수동
-                    if(cursor.getInt(cursor.getColumnIndex("weekday"))==1) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "월요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    }else if(cursor.getInt(cursor.getColumnIndex("weekday"))==2) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "화요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==3) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "수요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==4) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "목요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==5) {
-                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "금요일");
-                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
-                    }
-                    count++;
+                switch (cursor.getInt(cursor.getColumnIndex("weekday"))){  // It is for separating between calendar and schedule from DB.
+                    case 1:
+                            if(cursor.getInt(cursor.getColumnIndex("ala_hour"))<10)
+                                alarmList.add("0"+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"월요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            else
+                                alarmList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"월요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                            break;
+                        case 2:
+                            if(cursor.getInt(cursor.getColumnIndex("ala_hour"))<10)
+                                alarmList.add("0"+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"화요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            else
+                                alarmList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"화요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                            break;
+                        case 3:
+                            if(cursor.getInt(cursor.getColumnIndex("ala_hour"))<10)
+                                alarmList.add("0"+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"수요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            else
+                                alarmList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"수요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                            break;
+                        case 4:
+                            if(cursor.getInt(cursor.getColumnIndex("ala_hour"))<10)
+                                alarmList.add("0"+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"목요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            else
+                                alarmList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"목요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                            break;
+                        case 5:
+                            if(cursor.getInt(cursor.getColumnIndex("ala_hour"))<10)
+                                alarmList.add("0"+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"금요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            else
+                                alarmList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" + "     "+"금요일"+  "\n"+cursor.getString(cursor.getColumnIndex("event_name")));
+                            idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                            break;
+                        default:
+                            if(cursor.getInt(cursor.getColumnIndex("ala_hour"))<10)
+                                alarmList.add("0"+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" +"     "+String.valueOf(cursor.getInt(cursor.getColumnIndex("day")))+ "\n" + cursor.getString(cursor.getColumnIndex("event_name")));
+                            else
+                                alarmList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_hour"))) +"시 "+String.valueOf(cursor.getInt(cursor.getColumnIndex("ala_min")))+"분" +"     "+String.valueOf(cursor.getInt(cursor.getColumnIndex("day")))+ "\n" + cursor.getString(cursor.getColumnIndex("event_name")));
+                            idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                            break;
                 }
+                count++;
             }
         }
         cursor.close();
+
+        Ascending ascending = new Ascending();
+        Collections.sort(alarmList,ascending);
 
         if (count != 0) {
             aa = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.simple_list_item_1, alarmList);
             AlarmList.setAdapter(aa);
         }
     }
+
+    // For sorting strings in ascending order.
+    class Ascending implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            return o1.compareTo(o2);
+        }
+    }
+
     // 프래그먼트 갱신
     public void refresh() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -346,8 +371,30 @@ public class Tab_alarm extends Fragment {
         AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
         pendingIntent.cancel();
+    }
 
+    // Store alarm hour and minutes in DB (Auto alarm setting)
+    public void storeDB(String id, int hour, int min){
+        ContentValues values = new ContentValues();
 
+        if(hour == 0 && min == 0)
+            values.put("ala_code", 0);
+         else
+            values.put("ala_code", 1);
+        values.put("ala_hour", hour);
+        values.put("ala_min", min);
+
+        mainActivity.DB_helper.Update(id,values);
+    }
+    // Store alarm hour and minutes in DB (manual alarm setting)
+    public void storeDB(int hour, int min, String event){
+        ContentValues values = new ContentValues();
+        values.put("event_name", event);
+        values.put("ala_hour", hour);
+        values.put("ala_min", min);
+        values.put("ala_code", 1);
+
+        mainActivity.DB_helper.Insert(values);
     }
 
     @Override
@@ -359,21 +406,10 @@ public class Tab_alarm extends Fragment {
             // For refreshing this fragment caz this activity is action after finish typing data from setting page.
             // It should be updated with new data from DB.
            mainActivity.getSupportFragmentManager().beginTransaction().detach(mainActivity.F_alarm).attach(mainActivity.F_alarm).commit();
+           Calendar ex = (Calendar) data.getExtras().getSerializable("Calendar");
 
-            Calendar ex = (Calendar) data.getExtras().getSerializable("Calendar");
-            int hour = ex.get(Calendar.HOUR_OF_DAY);
-            int minute = ex.get(Calendar.MINUTE);
+            storeDB(ex.get(Calendar.HOUR_OF_DAY), ex.get(Calendar.MINUTE), data.getStringExtra("eventName"));
 
-            ContentValues values = new ContentValues();
-            values.put("event_name", data.getStringExtra("eventName"));
-            values.put("ala_hour", hour);
-            values.put("ala_min", minute);
-            values.put("ala_code", 1);
-            //MainActivity ma = (MainActivity) getActivity();
-            //ma.DB_helper.Insert(values);
-
-            mainActivity.DB_helper.Insert(values);
-//            Cursor c = ma.DB_helper.Select();
             Cursor cursor = mainActivity.DB_helper.Select();
             cursor.moveToLast();
             setAlarm((Calendar) data.getExtras().getSerializable("Calendar"), cursor.getInt(cursor.getColumnIndex("_id")));

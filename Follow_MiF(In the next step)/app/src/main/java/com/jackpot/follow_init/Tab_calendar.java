@@ -72,7 +72,7 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
 
                 if (cellType == BaseCellView.SELECTED) {
                     cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);
-                    cellView.setTextColor(R.color.black_overlay);;
+                    cellView.setTextColor(R.color.black_overlay);
 
                 } else if (cellType == BaseCellView.SELECTED_TODAY) {
                     cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);        // 날짜 선택했을 때, 색 변경.
