@@ -13,7 +13,7 @@ import java.io.Serializable;
  * Created by KWAK on 2018-06-03.
  */
 
-public class Database_overall extends SQLiteOpenHelper implements Serializable {
+public class Database_overall extends SQLiteOpenHelper{
 
     public static final int DATABASE_VERSION=1;
     public static final String DATABASE_NAME="OverallDB";
@@ -35,7 +35,7 @@ public class Database_overall extends SQLiteOpenHelper implements Serializable {
     public Database_overall(Context context, SQLiteDatabase.CursorFactory factory){
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
 
-        Log.e("데이터베이스", "디비 내부임");
+        Log.e("데이터베이스1", "디비 내부임");
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Database_overall extends SQLiteOpenHelper implements Serializable {
                     "ala_code integer);";
         db.execSQL(sql);
 
-        Log.e("데이터베이스2", "생성됬어염 쀼");
+        Log.e("데이터베이스1", "생성됬어염 쀼");
     }
 
     @Override

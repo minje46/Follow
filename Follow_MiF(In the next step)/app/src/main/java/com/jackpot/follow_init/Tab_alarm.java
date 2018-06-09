@@ -288,12 +288,41 @@ public class Tab_alarm extends Fragment {
             if (cursor.getInt(cursor.getColumnIndex("ala_code")) == 1) {
                 if (cursor.getInt(cursor.getColumnIndex("year")) == 0) {  // It is for separating between calendar and schedule from DB.
                     // weekday 를 숫자로 박아놈.
-                    alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + String.valueOf(cursor.getInt(cursor.getColumnIndex("weekday"))) + "요일");
-                    idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    if(cursor.getInt(cursor.getColumnIndex("weekday"))==1) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "월요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    }else if(cursor.getInt(cursor.getColumnIndex("weekday"))==2) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "화요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==3) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "수요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==4) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "목요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==5) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "금요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    }
+
                     count++;
                 } else {     // 캘린더 + 수동
-                    alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + String.valueOf(cursor.getInt(cursor.getColumnIndex("weekday"))) + "요일");
-                    idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    if(cursor.getInt(cursor.getColumnIndex("weekday"))==1) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "월요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    }else if(cursor.getInt(cursor.getColumnIndex("weekday"))==2) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "화요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==3) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "수요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==4) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "목요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    } else if(cursor.getInt(cursor.getColumnIndex("weekday"))==5) {
+                        alarmList.add(cursor.getString(cursor.getColumnIndex("event_name")) + "\n" + "금요일");
+                        idList.add(count, cursor.getInt(cursor.getColumnIndex("_id")));
+                    }
                     count++;
                 }
             }
@@ -304,9 +333,7 @@ public class Tab_alarm extends Fragment {
             aa = new ArrayAdapter<String>(rootView.getContext(), android.R.layout.simple_list_item_1, alarmList);
             AlarmList.setAdapter(aa);
         }
-
     }
-
     // 프래그먼트 갱신
     public void refresh() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -317,9 +344,10 @@ public class Tab_alarm extends Fragment {
         Intent callReceiver = new Intent(getContext(), Alarm_receiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), alarmId, callReceiver, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-        
         alarmManager.cancel(pendingIntent);
         pendingIntent.cancel();
+
+
     }
 
     @Override
@@ -328,6 +356,10 @@ public class Tab_alarm extends Fragment {
 
         // result code == -1 is signal from alarmSetting activity after set some input data in alarmSetting and then call this activity to set alarm.
         if (resultCode == -1) {
+            // For refreshing this fragment caz this activity is action after finish typing data from setting page.
+            // It should be updated with new data from DB.
+           mainActivity.getSupportFragmentManager().beginTransaction().detach(mainActivity.F_alarm).attach(mainActivity.F_alarm).commit();
+
             Calendar ex = (Calendar) data.getExtras().getSerializable("Calendar");
             int hour = ex.get(Calendar.HOUR_OF_DAY);
             int minute = ex.get(Calendar.MINUTE);

@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     // SQLite database.
     SQLiteDatabase database;            // Set a SQLite database
-    Database_overall DB_helper;      // Call SQLite helper which was over ridden.
+    Database_overall DB_helper;      // Call SQLite helper which was over ridden to store all of data such as schedule, calendar and alarm.
+    Database_search DB_result;      // Call SQLite helper which was over ridden to store all results of way searching.
 
     // trafficType 단위로 index 에 하나씩 통으로 저장됨.
     ArrayList<Obj_search> shortest = new ArrayList<Obj_search>();
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a SQLite database.
         DB_helper = new Database_overall(getApplicationContext(), null);
+        DB_result = new Database_search(getApplicationContext(), null);
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -106,8 +108,19 @@ public class MainActivity extends AppCompatActivity {
                     selected = F_setting;
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, selected).commit();
-            }
 
+/*
+                if(position == 0)
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, F_schedule,"schedule").commit();
+                else if(position == 1)
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, F_calendar,"calendar").commit();
+                else if(position == 2) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, F_alarm, "alarm").commit();
+                }
+                else if(position == 3)
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, F_setting,"setting").commit();
+*/
+            }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
             }

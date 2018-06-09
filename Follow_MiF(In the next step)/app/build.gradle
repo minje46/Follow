@@ -11,7 +11,14 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug{
+            // For developing.
+            resValue "string", "google_GEO_API_KEY", "AIzaSyBnvehCCtcga_pE_8tD6yIFdW3P-mVj3ds"
+        }
+
         release {
+            // For releasing.
+            resValue "string", "google_GEO_API_KEY", "AIzaSyD_ew-rpHLg9AeTyhzfnDf4s1P10Mk4OnM"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

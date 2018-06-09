@@ -170,45 +170,23 @@ public class Schedule_setting extends AppCompatActivity{
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
+                int check = 0;
                 // Schedule 정보를 디비에 다이렉트로 꽂아넣기.
                 // 위 경도 값이 return 되었을 때 save 되도록. 안그러면 DB에 제대로 값 안들어가니까.
-                if (dept_lati != 0.0 && dest_longi != 0.0 && start_hour >=7 && end_hour <= 22 && (start_hour < end_hour || (start_hour == end_hour && start_minute < end_minute)) && check_weekday ==0) {
+                if (dept_lati != 0.0 && dest_longi != 0.0 && start_hour >= 7 && end_hour <= 22 && (start_hour < end_hour || (start_hour == end_hour && start_minute < end_minute)) && check_weekday == 0) {
                     Database_overall DB_helper = Database_overall.getInstance(getApplicationContext());
                     ContentValues schedule_setting = new ContentValues();
 
                     Cursor cursor = DB_helper.Select();
-                    if(cursor != null) {
-                        while (cursor.moveToNext()) {
-                            if ((start_hour >= cursor.getInt(cursor.getColumnIndex("str_hour")) && start_hour <= cursor.getInt(cursor.getColumnIndex("end_hour")) ||
-                                    (end_hour >= cursor.getInt(cursor.getColumnIndex("str_hour")) && end_hour <= cursor.getInt(cursor.getColumnIndex("end_hour"))) && weekday == cursor.getInt(cursor.getColumnIndex("weekday")))) {
-                                Toast.makeText(getApplicationContext(), "일정이 겹칩니다!!!", Toast.LENGTH_LONG).show();
-                            } else {
-                                schedule_setting.put("event_name", inEvent.getText().toString());
-                                schedule_setting.put("dept_name", inDept.getText().toString());
-                                schedule_setting.put("dest_name", inDest.getText().toString());
-
-                                schedule_setting.put("weekday", weekday);
-                                schedule_setting.put("str_hour", start_hour);
-                                schedule_setting.put("str_min", start_minute);
-                                schedule_setting.put("end_hour", end_hour);
-                                schedule_setting.put("end_min", end_minute);
-
-                                schedule_setting.put("dept_lati", dept_lati);
-                                schedule_setting.put("dept_long", dept_longi);
-                                schedule_setting.put("dest_lati", dest_lati);
-                                schedule_setting.put("dest_long", dest_longi);
-
-                                schedule_setting.put("ala_code", alarm_check);
-
-
-                                DB_helper.Insert(schedule_setting);
-                                setResult(RESULT_OK);
-
-                                finish();
-                            }
+                    while (cursor.moveToNext()) {
+                        if (((start_hour >= cursor.getInt(cursor.getColumnIndex("str_hour")) && start_hour <= cursor.getInt(cursor.getColumnIndex("end_hour")) ||
+                                (end_hour >= cursor.getInt(cursor.getColumnIndex("str_hour")) && end_hour <= cursor.getInt(cursor.getColumnIndex("end_hour")))) && weekday == cursor.getInt(cursor.getColumnIndex("weekday")))) {
+                            Toast.makeText(getApplicationContext(), "일정이 겹칩니다!!!", Toast.LENGTH_LONG).show();
+                            check++;
                         }
-                    }else {
-                        Log.d("null", "null 이면 일로 와야함");
+                    }
+
+                    if (check == 0) {
                         schedule_setting.put("event_name", inEvent.getText().toString());
                         schedule_setting.put("dept_name", inDept.getText().toString());
                         schedule_setting.put("dest_name", inDest.getText().toString());
@@ -232,8 +210,9 @@ public class Schedule_setting extends AppCompatActivity{
 
                         finish();
                     }
+                    cursor.close();
 
-                } else if (check_weekday == 1){
+                } else {
                     Toast.makeText(getApplicationContext(), "You didn't put all of data or invalid data", Toast.LENGTH_SHORT).show();
                     check_weekday = 0;
                     checkMon.setChecked(false);
@@ -243,8 +222,7 @@ public class Schedule_setting extends AppCompatActivity{
                     checkFri.setChecked(false);
                     // 뭘 실행 또는 처리해줘야 하지?
                 }
-                else
-                    Toast.makeText(getApplicationContext(), "일정이 겹칩니다!", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

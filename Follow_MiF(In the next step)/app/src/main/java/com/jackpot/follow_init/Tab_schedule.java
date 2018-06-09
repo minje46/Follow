@@ -33,9 +33,6 @@ public class Tab_schedule extends Fragment {
     private TimeTableView Timetable_view;
     private ArrayList<TimeTableModel> Schedule_list;                 // TimeTableModel = Schedule 에 보여줄 time table 의 형식의 object.
     private FloatingActionButton btnAdd;
-
-    private ArrayList<Obj_schedule> obj_List = new ArrayList<>();       // data back up 용이래. 이것도 필요없게 만들갔으.
-
     private MainActivity mainActivity;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -99,6 +96,10 @@ public class Tab_schedule extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == -1){
+            // For refreshing this fragment caz this activity is action after finish typing data from setting page.
+            // It should be updated with new data from DB.
+            mainActivity.getSupportFragmentManager().beginTransaction().detach(mainActivity.F_schedule).attach(mainActivity.F_schedule).commit();
+
             Cursor cursor = mainActivity.DB_helper.Select();
             cursor.moveToLast();
             Thread waySearch = new Thread_waySearch(getContext(),cursor.getInt(cursor.getColumnIndex("_id")));

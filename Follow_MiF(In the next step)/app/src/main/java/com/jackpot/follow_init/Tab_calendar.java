@@ -1,5 +1,6 @@
 package com.jackpot.follow_init;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.p_v.flexiblecalendar.FlexibleCalendarView;
 import com.p_v.flexiblecalendar.entity.CalendarEvent;
+import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.view.BaseCellView;
 import com.p_v.flexiblecalendar.view.SquareCellView;
 
@@ -62,37 +64,25 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
 
         calendarView = (FlexibleCalendarView) rootView.findViewById(R.id.calendar_view);
         calendarView.setCalendarView(new FlexibleCalendarView.CalendarView() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public BaseCellView getCellView(int position, View convertView, ViewGroup parent, @BaseCellView.CellType int cellType) {
                 BaseCellView cellView = (BaseCellView) convertView;
                 LayoutInflater inflater = LayoutInflater.from(getActivity());
-                if (cellType == BaseCellView.TODAY) {
-                    if(cellType == BaseCellView.SELECTED)
-                        cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);        // 오늘 날짜, 색 변경.
-                    else if(cellType == BaseCellView.SELECTED_TODAY)
-                        cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);        // 날짜 선택했을 때, 색 변경.
-                    else
-                        cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);
-                }
-                /*
-                if (cellView == null) {
-                    LayoutInflater inflater = LayoutInflater.from(getActivity());
-                    cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);        // 날짜 선택했을 때, 색 변경.
-                }
-                전체를 흰색으로 감싸주는 것.
-                if (cellType == BaseCellView.OUTSIDE_MONTH) {
-                    cellView.setTextColor(getResources().getColor(R.color.white));
-                }
+
                 if (cellType == BaseCellView.SELECTED) {
-                    LayoutInflater inflater = LayoutInflater.from(getActivity());
                     cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);
-                }else if (cellType == BaseCellView.SELECTED_TODAY) {
-                    LayoutInflater inflater = LayoutInflater.from(getActivity());
-                    cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);
-                }*/
+                    cellView.setTextColor(R.color.black_overlay);;
+
+                } else if (cellType == BaseCellView.SELECTED_TODAY) {
+                    cellView = (BaseCellView) inflater.inflate(R.layout.calendar_date_cell_view, null);        // 날짜 선택했을 때, 색 변경.
+                    cellView.setTextColor(R.color.black_overlay);
+                } else if(cellType == BaseCellView.TODAY){
+                    cellView = (BaseCellView) inflater.inflate(R.layout.calendar_week_cell_view, null);
+                    cellView.setTextColor(R.color.black_overlay);
+                }
                 return cellView;
             }
-
             @Override
             public BaseCellView getWeekdayCellView(int position, View convertView, ViewGroup parent) {
                 BaseCellView cellView = (BaseCellView) convertView;
@@ -335,6 +325,10 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
         super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode == -1){
+            // For refreshing this fragment caz this activity is action after finish typing data from setting page.
+            // It should be updated with new data from DB.
+            mainActivity.getSupportFragmentManager().beginTransaction().detach(mainActivity.F_calendar).attach(mainActivity.F_calendar).commit();
+
             Cursor cursor = mainActivity.DB_helper.Select();
             cursor.moveToLast();
             Thread waySearch = new Thread_waySearch(getContext(),cursor.getInt(cursor.getColumnIndex("_id")));

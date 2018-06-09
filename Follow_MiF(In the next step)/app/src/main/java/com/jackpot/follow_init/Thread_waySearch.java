@@ -46,6 +46,9 @@ public class Thread_waySearch extends Thread{
     SQLiteDatabase database;
     Database_overall DB_helper;
 
+    SQLiteDatabase db;
+    Database_search DB_result;
+
     Obj_search buf;
 
     public Thread_waySearch(Context context) {
@@ -68,22 +71,6 @@ public class Thread_waySearch extends Thread{
         // Using singleton dp, it makes access database directly on Thread as well.
         DB_helper = Database_overall.getInstance(mContext);
         Cursor cursor = DB_helper.Select();
-/*
-        while(cursor.moveToNext()){     // DB 내부 Test Log. (지우지 말 것.)
-            Log.e("데이터베이스in쓰레드","ID : "+cursor.getInt(cursor.getColumnIndex("_id"))
-                    +"\nEvent name : "+cursor.getString(cursor.getColumnIndex("event_name"))
-                    +"\nDept name : "+cursor.getString(cursor.getColumnIndex("dept_name"))
-                    +"\nDept Lati : "+cursor.getDouble(cursor.getColumnIndex("dept_lati"))
-                    +"\nDest name : "+cursor.getString(cursor.getColumnIndex("dest_name"))
-                    +"\nDest Long : "+cursor.getDouble(cursor.getColumnIndex("dest_long"))
-                    +"\nSect time : "+cursor.getInt(cursor.getColumnIndex("sec_time"))
-                    +"\nStart hour : "+cursor.getInt(cursor.getColumnIndex("str_hour"))
-                    +"\nEnd minute : "+cursor.getInt(cursor.getColumnIndex("end_min"))
-                    +"\nAlarm hour : "+cursor.getInt(cursor.getColumnIndex("ala_hour"))
-                    +"\nAlarm minute : "+cursor.getInt(cursor.getColumnIndex("ala_min")));
-        }
-*/
-
 
         // 제대로 되는 거 같긴 한데, 알람이 안울린 경우는 길찾기에서 sec_time 이 계산 안되었을 때인가?
         while(cursor.moveToNext()){
@@ -161,6 +148,8 @@ public class Thread_waySearch extends Thread{
                     Log.e("진쓰레드값 메인에 번호",String.valueOf((((MainActivity)mContext).shortest).get(i).getBusNo()));
                     Log.e("진쓰레드값 메인에 하차",(((MainActivity)mContext).shortest).get(i).getEndName());
                 }
+                // 길찾기 결과 값을 result 디비에 저장.
+                Store_result();
 
                 // 길찾기 결과 값 Main db에 값저장.
                 database = DB_helper.getWritableDatabase();
@@ -191,4 +180,52 @@ public class Thread_waySearch extends Thread{
             Log.d("Service Test", "Result call back fail");
         }
     };
+
+    public void Store_result(){
+        // 길찾기 결과 값 result db에 값저장.
+        for(int i = 0; i < (((MainActivity)mContext).shortest).size(); i++)
+        {
+            ContentValues values = new ContentValues();
+
+            values.put("fk", primaryKey);
+            values.put("path_type",(((MainActivity)mContext).shortest).get(i).getPathType());
+            values.put("traffic_type",(((MainActivity)mContext).shortest).get(i).getTrafficType());
+            values.put("section_time",(((MainActivity)mContext).shortest).get(i).getSection_time());
+            values.put("section_dis",(((MainActivity)mContext).shortest).get(i).getSection_distance());
+            switch ((((MainActivity)mContext).shortest).get(i).getTrafficType()){
+                case 1:     // 1 is subway
+                    values.put("start_name",(((MainActivity)mContext).shortest).get(i).getStartName());
+                    values.put("end_name",(((MainActivity)mContext).shortest).get(i).getEndName());
+                    values.put("way_code",(((MainActivity)mContext).shortest).get(i).getWayCode());
+                    break;
+
+                case 2:     // 2 is bus
+                    values.put("start_name",(((MainActivity)mContext).shortest).get(i).getStartName());
+                    values.put("end_name",(((MainActivity)mContext).shortest).get(i).getEndName());
+                    values.put("bus_no",(((MainActivity)mContext).shortest).get(i).getBusNo());
+                    values.put("type",(((MainActivity)mContext).shortest).get(i).getType());
+                    break;
+            }
+            ((MainActivity)mContext).DB_result.Insert(values);
+        }
+
+        // 쓰레드에서 디비2에 제대로 들어갔는지 테스트
+        /*
+        Cursor cursor = ((MainActivity)mContext).DB_result.Select();
+        while(cursor.moveToNext()){
+            Log.e("디비2","ID : "+cursor.getInt(cursor.getColumnIndex("_id"))
+                    +"\nFK : "+cursor.getInt(cursor.getColumnIndex("fk"))
+                    +"\nPath Type : "+cursor.getInt(cursor.getColumnIndex("path_type"))
+                    +"\nTraffic Type : "+cursor.getInt(cursor.getColumnIndex("traffic_type"))
+                    +"\nSection Time : "+cursor.getInt(cursor.getColumnIndex("section_time"))
+                    +"\nSection Dis : "+cursor.getInt(cursor.getColumnIndex("section_dis"))
+                    +"\nStart name : "+cursor.getString(cursor.getColumnIndex("start_name"))
+                    +"\nEnd name : "+cursor.getString(cursor.getColumnIndex("end_name"))
+                    +"\nWay code : "+cursor.getInt(cursor.getColumnIndex("way_code"))
+                    +"\nbus type : "+cursor.getInt(cursor.getColumnIndex("type"))
+                    +"\nbus No : "+cursor.getInt(cursor.getColumnIndex("bus_no")));
+        }
+        cursor.close();
+        */
+    }
 }

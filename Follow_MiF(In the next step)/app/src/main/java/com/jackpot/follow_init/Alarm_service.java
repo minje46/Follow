@@ -26,7 +26,7 @@ public class Alarm_service extends Service {
 
         mediaPlayer= MediaPlayer.create(this, R.raw.alarm);
         Intent toAlarmPlaying = new Intent(this,Alarm_playing.class);
-        toAlarmPlaying.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        toAlarmPlaying.addFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
         startActivity(toAlarmPlaying);
@@ -36,7 +36,7 @@ public class Alarm_service extends Service {
         super.onDestroy();
         mediaPlayer.stop();
         Intent toMain=new Intent(this,MainActivity.class);
-        toMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        toMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(toMain);
     }
 }

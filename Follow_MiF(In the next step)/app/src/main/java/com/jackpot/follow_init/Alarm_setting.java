@@ -159,7 +159,7 @@ public class Alarm_setting extends AppCompatActivity { // Main3Activity
             alarmHour.setText(String.valueOf(temp));
 
             if (alarm_minute < 10) alarmMinute.setText("0" + String.valueOf(alarm_minute));
-            else alarmMinute.setText("0" + String.valueOf(alarm_minute));
+            else alarmMinute.setText(String.valueOf(alarm_minute));
 
             Toast.makeText(getApplicationContext(),
                     "시간 : " + alarm_hour + " : " + alarm_minute, Toast.LENGTH_SHORT).show();

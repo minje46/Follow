@@ -50,7 +50,7 @@ import android.widget.Toast;
 public class Map extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final LatLng DEFAULT_LOCATION = new LatLng(37.56, 126.97);
-    private static final String TAG = "googlemap_example";
+    private static final String TAG = "googleMap_error";
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
     private static final int UPDATE_INTERVAL_MS = 15000;
@@ -329,7 +329,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
                 location.setLatitude(LikelyLatLngs[0].latitude);
                 location.setLongitude(LikelyLatLngs[0].longitude);
 
-                setCurrentLocation(location, LikelyPlaceNames[0], LikelyAddresses[0]);
+                if(LikelyPlaceNames[0].compareTo(LikelyPlaceNames[1]) > 0)
+                    setCurrentLocation(location, LikelyPlaceNames[1], LikelyAddresses[0]);
+                else
+                    setCurrentLocation(location, LikelyPlaceNames[0], LikelyAddresses[0]);
             }
         });
     }
