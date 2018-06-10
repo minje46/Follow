@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/schedule_setting_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="top|center">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#32b1ff"
+        android:gravity="center|center_vertical"
+        android:singleLine="true"
+        android:text="일정 입력"
+        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:textColor="@color/white"
+        android:textSize="30dp" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtTitle"
+        android:id="@+id/scrollView2"
+        android:paddingLeft="15dp">
+
+        <RelativeLayout
+            android:id="@+id/c_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/inEvent"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="25dp"
+                android:hint="제목을 입력하시오" />
+
+            <EditText
+                android:id="@+id/inDept"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/inEvent"
+                android:layout_marginTop="14dp"
+                android:hint="출발지를 입력하시오"
+                android:singleLine="true" />
+
+            <ImageButton
+                android:id="@+id/btnDept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/inDept"
+                android:layout_toEndOf="@+id/inDept"
+                android:layout_toRightOf="@+id/inDept"
+                android:background="@color/white"
+                android:gravity="center"
+                android:src="@drawable/place" />
+
+            <EditText
+                android:id="@+id/inDest"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/inDept"
+                android:hint="도착지를 입력하시오"
+                android:singleLine="true" />
+
+            <ImageButton
+                android:id="@+id/btnDest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/inDept"
+                android:layout_toEndOf="@+id/inDest"
+                android:layout_toRightOf="@+id/inDest"
+                android:background="@color/white"
+                android:gravity="center"
+                android:src="@drawable/place" />
+
+            <TextView
+                android:id="@+id/yearDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/year"
+                android:layout_alignBottom="@+id/year"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:text="일정 날짜"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/inDest"
+                android:layout_marginTop="14dp"
+                android:layout_toEndOf="@+id/yearDate"
+                android:layout_toRightOf="@+id/yearDate"
+                android:layout_marginLeft="9dp"
+                android:gravity="center"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/yearSlash"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/year"
+                android:layout_toEndOf="@+id/year"
+                android:layout_toRightOf="@+id/year"
+                android:text="년"
+                android:textSize="25dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/month"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/yearSlash"
+                android:layout_alignBottom="@+id/yearSlash"
+                android:layout_toEndOf="@+id/yearSlash"
+                android:layout_toRightOf="@+id/yearSlash"
+                android:gravity="center"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/monthSlash"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/yearSlash"
+                android:layout_alignBottom="@+id/yearSlash"
+                android:layout_toEndOf="@+id/month"
+                android:layout_toRightOf="@+id/month"
+                android:gravity="center"
+                android:text="월"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/day"
+                android:layout_width="34dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/monthSlash"
+                android:layout_alignBottom="@+id/monthSlash"
+                android:layout_toEndOf="@+id/monthSlash"
+                android:layout_toRightOf="@+id/monthSlash"
+                android:gravity="center"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/daySlash"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/yearSlash"
+                android:layout_alignBottom="@+id/yearSlash"
+                android:layout_toEndOf="@+id/day"
+                android:layout_toRightOf="@+id/day"
+                android:gravity="center"
+                android:text="일"
+                android:textSize="25dp" />
+
+            <Button
+                android:id="@+id/btnStrTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/day"
+                android:layout_marginTop="22dp"
+                android:layout_toEndOf="@+id/strTimeTextMinute"
+                android:layout_toRightOf="@+id/strTimeTextMinute"
+                android:gravity="center"
+                android:text="입력"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/strTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnStrTime"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:textSize="18dp"
+                android:text="시작 시간"/>
+
+            <TextView
+                android:id="@+id/strTimeTextAP"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/strTime"
+                android:layout_toRightOf="@+id/strTime"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:textSize="25dp"/>
+
+            <TextView
+                android:id="@+id/strTimeTextHour"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnStrTime"
+                android:layout_alignBottom="@+id/btnStrTime"
+                android:layout_toEndOf="@+id/strTimeTextAP"
+                android:layout_toRightOf="@+id/strTimeTextAP"
+                android:gravity="center"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/firSlash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnStrTime"
+                android:layout_toRightOf="@+id/strTimeTextHour"
+                android:text=":"
+                android:textSize="25dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/strTimeTextMinute"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnStrTime"
+                android:layout_toRightOf="@+id/firSlash"
+                android:gravity="center"
+                android:textSize="25dp"/>
+
+            <Button
+                android:id="@+id/btnEndTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnStrTime"
+                android:layout_toEndOf="@+id/endTimeTextMinute"
+                android:layout_toRightOf="@+id/endTimeTextMinute"
+                android:gravity="center"
+                android:text="입력"
+                android:textSize="18dp" />
+            <TextView
+                android:id="@+id/endTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnEndTime"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:textSize="18dp"
+                android:text="종료 시간"/>
+
+            <TextView
+                android:id="@+id/endTimeTextAP"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/endTime"
+                android:layout_toRightOf="@+id/endTime"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"
+                android:textSize="25dp"/>
+
+            <TextView
+                android:id="@+id/endTimeTextHour"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnEndTime"
+                android:layout_toRightOf="@+id/endTimeTextAP"
+                android:gravity="center"
+                android:textSize="25dp"/>
+
+            <TextView
+                android:id="@+id/secSlash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnEndTime"
+                android:layout_toRightOf="@+id/endTimeTextHour"
+                android:text=":"
+                android:gravity="center"
+                android:textSize="25dp"/>
+
+            <TextView
+                android:id="@+id/endTimeTextMinute"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnEndTime"
+                android:layout_toRightOf="@+id/secSlash"
+                android:gravity="center"
+                android:textSize="25dp"/>
+            <LinearLayout
+                android:id="@+id/tranLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnEndTime"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/transportation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/btnEndTime"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center|center_vertical"
+                    android:paddingTop="5dp"
+                    android:text="운송 수단"
+                    android:textSize="18dp" />
+
+                <CheckBox
+                    android:id="@+id/btnBus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="버스" />
+
+                <CheckBox
+                    android:id="@+id/btnSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="지하철" />
+
+                <CheckBox
+                    android:id="@+id/btnWal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="버스 + 지하철" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/preAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tranLayout"
+                android:layout_marginTop="31dp"
+                android:text="미리 알림"
+                android:textSize="18dp" />
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/preAlarmMinute"
+                android:hint="...분"
+                android:textSize="25dp"
+                android:layout_alignBaseline="@+id/preAlarm"
+                android:layout_toRightOf="@+id/preAlarm"
+                android:layout_marginLeft="5dp"
+                android:gravity="center"/>
+            <Button
+                android:id="@+id/btnPreAlarm"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignBaseline="@+id/preAlarm"
+                android:layout_toRightOf="@+id/preAlarmMinute"
+                android:text="입력"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:id="@+id/alarmCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/btnPreAlarm"
+                android:layout_marginTop="11dp"
+                android:paddingTop="15dp"
+                android:text="알람 여부"
+                android:textSize="18dp" />
+
+            <CheckBox
+                android:id="@+id/checkAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/alarmCheck"
+                android:layout_alignBottom="@+id/alarmCheck"
+                android:layout_alignLeft="@+id/year"
+                android:layout_alignStart="@+id/year"
+                android:layout_marginLeft="11dp"
+                android:layout_marginStart="11dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnSave"
+        android:layout_alignBottom="@+id/btnSave"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:text="취소" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scrollView2"
+        android:layout_toLeftOf="@+id/btnCancel"
+        android:layout_toStartOf="@+id/btnCancel"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:text="등록" />
+</RelativeLayout>

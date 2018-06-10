@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.jackpot.follow_init.calendar_cellView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/calendar_toolbar_background"
+    android:textAppearance="@color/black_overlay"
+    android:gravity="center"
+    android:textSize="16dp"
+    android:textStyle="bold" />

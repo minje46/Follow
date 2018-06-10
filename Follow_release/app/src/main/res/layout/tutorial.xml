@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:background="@android:color/white"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:id="@+id/tutorialName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:gravity="center|center_vertical"
+        android:text="튜토리얼"
+        android:textSize="40dp" />
+
+    <Button
+        android:id="@+id/tutorialInform"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tutorialName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="라이센스"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/tutorialSche"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tutorialInform"
+        android:layout_centerHorizontal="true"
+        android:text="스케쥴 사용법"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/tutorialCal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tutorialSche"
+        android:layout_centerHorizontal="true"
+        android:text="일정 사용법"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/tutorialAla"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tutorialCal"
+        android:layout_alignStart="@+id/tutorialCal"
+        android:layout_below="@+id/tutorialCal"
+        android:text="알람 사용법"
+        android:textSize="20dp" />
+</RelativeLayout>
