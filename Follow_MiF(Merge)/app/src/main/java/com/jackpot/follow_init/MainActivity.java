@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     Tab_schedule F_schedule;        // Create Schedule Fragment.
     Tab_calendar F_calendar;        // Create Calendar Fragment.
     Tab_alarm F_alarm;              // Create Alarm Fragment.
-    Tab_setting F_setting;          // Create Setting Fragment.
+    Tab_wayReeult F_wayResult;      // Create WayResult Fragment.
 
     SharedPreferences tutorial;     // It is for separating which fragment will show.
     SharedPreferences.Editor sh_edit;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     Database_overall DB_helper;      // Call SQLite helper which was over ridden to store all of data such as schedule, calendar and alarm.
     Database_search DB_result;      // Call SQLite helper which was over ridden to store all results of way searching.
 
-    // trafficType 단위로 index 에 하나씩 통으로 저장됨.
+    // Data will be stored as Obj_search unit.
     ArrayList<Obj_search> shortest = new ArrayList<Obj_search>();
 
     // To deal with back button.
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         DB_helper = new Database_overall(getApplicationContext(), null);
         DB_result = new Database_search(getApplicationContext(), null);
 
-        // 튜토리얼을 위한 처음 왔는지 default 값 true 사용.
+        // It saves whether user uses this app first or not. True means user should do tutorial.
         tutorial = getSharedPreferences("Tutorial",MODE_PRIVATE);
         sh_edit = tutorial.edit();
         sh_edit.putBoolean("First",true);
@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Action bar 역할이 뭐였더라?
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
 
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         F_schedule = new Tab_schedule();
         F_calendar = new Tab_calendar();
         F_alarm = new Tab_alarm();
-        F_setting = new Tab_setting();
+        F_wayResult = new Tab_wayReeult();
 
         // Default page is schedule fragment.(The first page when user open the Follow application.)
         getSupportFragmentManager().beginTransaction().replace(R.id.container, F_schedule).commit();
@@ -111,8 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cursor = DB_result.Select();
 
-        if(cursor.getCount() != 0){     //Without above situation, it should be state of null.
-            Log.e("알람플진입","진입?"+"\n"+cursor.getCount());
+        if(cursor.getCount() != 0){     // For passing tutorial.
             sh_edit.putBoolean("First", false);
             sh_edit.commit();
         }
@@ -131,14 +129,13 @@ public class MainActivity extends AppCompatActivity {
                     selected = F_alarm;
                 else if(position == 3){
                     if(tutorial.getBoolean("First",true)) {
-                        Log.e("알람플1","처음");
+                        //selected = F_setting;
                         selected = F_calendar;
                     }
                     else{
-                        Log.e("알람플2","두번째");
-                        selected = F_setting;}
+                        selected = F_wayResult;
+                    }
                 }
-
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, selected).commit();
             }
             @Override
@@ -167,12 +164,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //화면회전시 데이터 보존
+    // For saving data on horizontal way.
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
     }
 
+    // Saving bus type data.
     public void HashBus(){
         busType.put(1, "일반");
         busType.put(2, "좌석");
@@ -192,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         busType.put(26, "급행간선");
     }
 
+    // Saving subway code data.
     public void HashSubway(){
         subwayCode.put(1,"수도권 1호선");
         subwayCode.put(2,"수도권 2호선");

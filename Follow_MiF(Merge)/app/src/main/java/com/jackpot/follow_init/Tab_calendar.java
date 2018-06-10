@@ -205,7 +205,7 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
         Ascending ascending = new Ascending();
         Collections.sort(events,ascending);
 
-        for(int i = 0; i < events.size(); i++){
+        for(int i = 0; i < events.size(); i++) {
             result += events.get(i).toString() + "\n";
         }
 
@@ -321,6 +321,7 @@ public class Tab_calendar extends Fragment implements FlexibleCalendarView.OnMon
 
             Cursor cursor = mainActivity.DB_helper.Select();
             cursor.moveToLast();
+            // 알람 코드 확인하기
             Thread waySearch = new Thread_waySearch(getContext(),cursor.getInt(cursor.getColumnIndex("_id")));
             Toast.makeText(getActivity(),"스케쥴 작성된 PK id : "+cursor.getInt(cursor.getColumnIndex("_id")),Toast.LENGTH_LONG).show();
             waySearch.start();

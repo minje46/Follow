@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -41,7 +42,8 @@ public class Calendar_setting extends AppCompatActivity {
     int id = 0;
     int start_hour, start_minute;
     int end_hour, end_minute;
-
+    int pathType  = -1;
+    int early = -1;
     int alarm_check = 0;
 
     public Calendar_setting() {
@@ -56,8 +58,6 @@ public class Calendar_setting extends AppCompatActivity {
         inEvent = findViewById(R.id.inEvent);
         inDept = findViewById(R.id.inDept);
         inDest = findViewById(R.id.inDest);
-        /*startTime = findViewById(R.id.startTime);
-        endTime = findViewById(R.id.endTime);*/
 
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
@@ -66,7 +66,6 @@ public class Calendar_setting extends AppCompatActivity {
 
         Button btnPreAlarm = findViewById(R.id.btnPreAlarm);
         registerForContextMenu(btnPreAlarm);
-
 
         ImageButton btnDept = findViewById(R.id.btnDept);
         ImageButton btnDest = findViewById(R.id.btnDest);
@@ -98,6 +97,33 @@ public class Calendar_setting extends AppCompatActivity {
         strMinute.setText(currentMin.format(date));
         endMinute.setText(currentMin.format(date));
 
+        final CheckBox checkAll = findViewById(R.id.btnWal);
+        checkAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkAll.isChecked())
+                    pathType = 0;
+            }
+        });
+
+        final CheckBox checkSub = findViewById(R.id.btnSub);
+        checkSub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkSub.isChecked()){
+                    pathType = 1;
+                }
+            }
+        });
+        final CheckBox checkBus = findViewById(R.id.btnBus);
+        checkBus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkBus.isChecked()){
+                    pathType = 2;
+                }
+            }
+        });
 
         TextView year = findViewById(R.id.year);
         TextView month = findViewById(R.id.month);
@@ -152,11 +178,11 @@ public class Calendar_setting extends AppCompatActivity {
             };
         });
 
-        final CheckBox checkBox = findViewById(R.id.checkAlarm);
-        checkBox.setOnClickListener(new View.OnClickListener() {
+        CheckBox checkBox = findViewById(R.id.checkAlarm);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (checkBox.isChecked())
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
                     alarm_check = 1;
                 else
                     alarm_check = 0;
@@ -178,7 +204,7 @@ public class Calendar_setting extends AppCompatActivity {
             public void onClick(View v) {
                 // Schedule 정보를 디비에 다이렉트로 꽂아넣기.
                 // 위 경도 값이 return 되었을 때 save 되도록. 안그러면 DB에 제대로 값 안들어가니까.
-                if (dept_lati != 0.0 && dest_longi != 0.0 && (start_hour < end_hour || (start_hour == end_hour && start_minute < end_minute))) {
+                if (dept_lati != 0.0 && dest_longi != 0.0 && pathType != -1 && early != -1 && (start_hour < end_hour || (start_hour == end_hour && start_minute < end_minute))) {
                     Toast.makeText(getApplicationContext(), String.valueOf(alarm_check), Toast.LENGTH_LONG).show();
                     ContentValues schedule_setting = new ContentValues();
 
@@ -200,6 +226,8 @@ public class Calendar_setting extends AppCompatActivity {
                     schedule_setting.put("dest_lati", dest_lati);
                     schedule_setting.put("dest_long", dest_longi);
 
+                    schedule_setting.put("path_type",pathType);
+                    schedule_setting.put("early_min",early);
                     schedule_setting.put("ala_code", alarm_check);
 
                     Database_overall DB_helper = Database_overall.getInstance(getApplicationContext());
@@ -330,33 +358,35 @@ public class Calendar_setting extends AppCompatActivity {
         switch (item.getItemId()) {
             case 1:
                 textView.setText("0분");
+                early = 0;
                 return true;
             case 2:
                 textView.setText("10분");
+                early = 10;
                 return true;
             case 3:
                 textView.setText("20분");
+                early = 20;
                 return true;
             case 4:
                 textView.setText("30분");
+                early = 30;
                 return true;
             case 5:
                 textView.setText("40분");
+                early = 40;
                 return true;
             case 6:
                 textView.setText("50분");
+                early = 50;
                 return true;
             case 7:
                 textView.setText("60분");
+                early = 60;
                 return true;
             case 8:
                 textView.setText("70분");
-                return true;
-            case 9:
-                textView.setText("80분");
-                return true;
-            case 10:
-                textView.setText("90분");
+                early = 70;
                 return true;
         }
         return true;

@@ -60,6 +60,8 @@ public class Database_overall extends SQLiteOpenHelper{
                     "str_min integer,"+
                     "end_hour integer,"+
                     "end_min integer,"+
+                    "path_type integer,"+
+                    "early_min integer,"+
                     "ala_hour integer,"+
                     "ala_min integer,"+
                     "ala_code integer);";

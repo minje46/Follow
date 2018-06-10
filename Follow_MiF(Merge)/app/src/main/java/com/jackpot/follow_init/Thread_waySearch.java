@@ -46,9 +46,6 @@ public class Thread_waySearch extends Thread{
     SQLiteDatabase database;
     Database_overall DB_helper;
 
-    SQLiteDatabase db;
-    Database_search DB_result;
-
     Obj_search buf;
 
     public Thread_waySearch(Context context) {
@@ -76,7 +73,7 @@ public class Thread_waySearch extends Thread{
         while(cursor.moveToNext()){
             Log.e("데이터베이스in길찾기","ID : "+cursor.getInt(cursor.getColumnIndex("_id")));
             if(cursor.getInt(cursor.getColumnIndex("_id")) == primaryKey)
-                    odsayService.requestSearchPubTransPath(String.valueOf(cursor.getDouble(cursor.getColumnIndex("dept_long"))), String.valueOf(cursor.getDouble(cursor.getColumnIndex("dept_lati"))), String.valueOf(cursor.getDouble(cursor.getColumnIndex("dest_long"))), String.valueOf(cursor.getDouble(cursor.getColumnIndex("dest_lati"))), "0", "0", "0", onResultCallbackListener);
+                    odsayService.requestSearchPubTransPath(String.valueOf(cursor.getDouble(cursor.getColumnIndex("dept_long"))), String.valueOf(cursor.getDouble(cursor.getColumnIndex("dept_lati"))), String.valueOf(cursor.getDouble(cursor.getColumnIndex("dest_long"))), String.valueOf(cursor.getDouble(cursor.getColumnIndex("dest_lati"))), "0", "0", String.valueOf(cursor.getInt(cursor.getColumnIndex("path_type"))), onResultCallbackListener);
         }
 
         // Thread 종료하는 것. (run 실행 완료하면 자동으로 종료되긴 한다.)
@@ -165,11 +162,14 @@ public class Thread_waySearch extends Thread{
 
                 // 길찾기 완료 후, Tab_alarm 호출. (For setting alarm automatically)
                 if (cursor.getInt(cursor.getColumnIndex("year")) == 0) { // 스케쥴 알람 세팅
+                    Log.e("알람 확인","스케쥴알람세팅");
                     ((MainActivity)mContext).F_alarm.setAlarm(mContext, primaryKey);
                 }
                 else { // 캘린더 알람 세팅
+                    Log.e("알람 확인","캘린더알람세팅");
                     ((MainActivity)mContext).F_alarm.setAlarm(primaryKey, mContext);
                 }
+                cursor.close();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -226,6 +226,5 @@ public class Thread_waySearch extends Thread{
                     +"\nbus No : "+cursor.getInt(cursor.getColumnIndex("bus_no")));
         }
         cursor.close();
-
     }
 }

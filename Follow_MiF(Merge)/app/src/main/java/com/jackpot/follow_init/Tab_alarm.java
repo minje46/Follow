@@ -127,17 +127,30 @@ public class Tab_alarm extends Fragment {
     // Auto setting alarm for schedule.
     public void setAlarm(Context context, int alarmId) {
         Calendar cal = Calendar.getInstance();
-        double sec_time = 0.0;
 
         Cursor cursor = mainActivity.DB_helper.Select();
         cursor.moveToLast();
-        sec_time = cursor.getDouble(cursor.getColumnIndex("sec_time"));
+        int sec_min =(int)cursor.getDouble(cursor.getColumnIndex("sec_time"));     // 소요시간 (분)
+        int pre_min = cursor.getInt(cursor.getColumnIndex("early_min"));            // 미리 알림시간.(분)
+        int tot_min = pre_min + sec_min;
 
-        double sec_hour = sec_time / 60, sec_minute = sec_time % 60;
         int day_of_week = cal.get(Calendar.DAY_OF_WEEK); // 1.. 일요일, 2.. 월요일 , ... , 7.. 토요일
         int year = cal.get(Calendar.YEAR); // 2018
         int month = cal.get(Calendar.MONTH); // 0.. 일월, 1.. 이월, ~ , 11..십이월
         int day = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cursor.getInt(cursor.getColumnIndex("str_hour"));
+        int min = cursor.getInt(cursor.getColumnIndex("str_min"));
+
+        int tot_event_start = (hour * 60) + min;        // 일정 시간 분으로 바꾼거(분)
+
+        if((tot_event_start- tot_min) >= 0){
+            hour = (tot_event_start - tot_min) / 60;
+            min = (tot_event_start - tot_min) % 60;
+        } else {                                        // 전날로 알람이 땡겨질떄.
+            hour = (1440 + (tot_event_start- tot_min)) / 60;
+            min = (1440 + (tot_event_start- tot_min)) % 60;
+            day--;
+        }
 
         // weekday 1..월요일 ~ 5..금요일
         switch (day_of_week) {
@@ -236,9 +249,7 @@ public class Tab_alarm extends Fragment {
                 Log.e("에러", "요일 체크 에러");
         }
 
-        cal.set(year, month, day,
-                (cursor.getInt(cursor.getColumnIndex("str_hour")) - (int) sec_hour),
-                (cursor.getInt(cursor.getColumnIndex("str_min")) - (int) sec_minute), 00);
+        cal.set(year, month, day, hour, min, 00);
 
         Toast.makeText(context, "Alarm is set @ " + cal.getTime(), Toast.LENGTH_LONG).show();
         Intent callReceiver = new Intent(context, Alarm_receiver.class);
@@ -257,22 +268,39 @@ public class Tab_alarm extends Fragment {
     // Auto setting alarm for calendar.
     public void setAlarm(int alarmId, Context context) {
         Calendar cal = Calendar.getInstance();
-        double sec_time = 0.0;
+
+        Log.e("알람 확인","캘린더 알람 진입");
 
         Cursor cursor = mainActivity.DB_helper.Select();
         cursor.moveToLast();
-        sec_time = cursor.getDouble(cursor.getColumnIndex("sec_time"));
+        int sec_min =(int)cursor.getDouble(cursor.getColumnIndex("sec_time"));     // 소요시간 (분)
+        int pre_min = cursor.getInt(cursor.getColumnIndex("early_min"));            // 미리 알림시간.(분)
+        int tot_min = pre_min + sec_min;                                                  // 계산을 위한 합. (분)
 
-        double sec_hour = sec_time / 60, sec_minute = sec_time % 60;
+        Log.e("알람 확인","total min : "+tot_min);
+
         int year = cursor.getInt(cursor.getColumnIndex("year"));  // 2018
-        int month = cursor.getInt(cursor.getColumnIndex("month")) + 1; // 0.. 일월, 1.. 이월, ~ , 11..십이월
+        int month = cursor.getInt(cursor.getColumnIndex("month")); // 0.. 일월, 1.. 이월, ~ , 11..십이월
         int day = cursor.getInt(cursor.getColumnIndex("day"));
+        int hour = cursor.getInt(cursor.getColumnIndex("str_hour"));
+        int min = cursor.getInt(cursor.getColumnIndex("str_min"));
 
-        cal.set(year, month, day,
-                (cursor.getInt(cursor.getColumnIndex("str_hour")) - (int) sec_hour),
-                (cursor.getInt(cursor.getColumnIndex("str_min")) - (int) sec_minute), 00);
+        int tot_event_start = (hour * 60) + min;        // 일정 시간 분으로 바꾼거(분)
+
+        if((tot_event_start- tot_min) >= 0){
+            hour = (tot_event_start - tot_min) / 60;
+            min = (tot_event_start - tot_min) % 60;
+        } else {                                        // 전날로 알람이 땡겨질떄.
+            hour = (1440 + (tot_event_start- tot_min)) / 60;
+            min = (1440 + (tot_event_start- tot_min)) % 60;
+            day--;
+        }
+
+        cal.set(year, month, day, hour, min, 00);
 
         Toast.makeText(context, "Alarm is set @ " + cal.getTime(), Toast.LENGTH_LONG).show();
+
+        cursor.close();
 
         Intent callReceiver = new Intent(context, Alarm_receiver.class);
         callReceiver.putExtra("id", alarmId);
@@ -377,6 +405,8 @@ public class Tab_alarm extends Fragment {
     public void storeDB(String id, int hour, int min){
         ContentValues values = new ContentValues();
 
+        Log.e("알람 확인","TIME"+hour+min);
+
         if(hour == 0 && min == 0)
             values.put("ala_code", 0);
          else
@@ -386,6 +416,7 @@ public class Tab_alarm extends Fragment {
 
         mainActivity.DB_helper.Update(id,values);
     }
+
     // Store alarm hour and minutes in DB (manual alarm setting)
     public void storeDB(int hour, int min, String event){
         ContentValues values = new ContentValues();
