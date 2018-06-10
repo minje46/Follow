@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Follow</string>
+    <string name="google_API_Key_debug">AIzaSyBnvehCCtcga_pE_8tD6yIFdW3P-mVj3ds</string>
+    <string name="google_API_Key_release">AIzaSyD_ew-rpHLg9AeTyhzfnDf4s1P10Mk4OnM</string>
+    <string name="odsay_API_Key">1qDExRCKtc8wNNMcLn4/5trz+wnyZ9NEKxijHM7NggU</string>
+</resources>
