@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#32b1ff</color>
+
+    <!-- Alarm colors -->
+    <color name="white">#fff</color>
+    <color name="blue">#c5ffe9</color>
+    <color name="yellow">#f2f41a</color>
+    <color name="black_overlay">#66000000</color>
+
+
+    <!-- Calendar library colors -->
+    <color name="action_bar_color_activity_1">#c798fff1</color>
+    <color name="title_text_color_activity_1">@android:color/black</color>
+    <color name="date_outside_month_text_color_activity_1">#A1F5FF</color>
+    <color name="background_name_of_dayweek_bar">#c798fff1</color>
+    <color name="text_name_of_dayweek_bar">@android:color/black</color>
+
+    <!-- Schedule library colors -->
+    <color name="view_line">#ffe6e6e6</color>
+    <color name="text_color">#333</color>
+    <!-- For suggestions -->
+    <color name="ic_coure_yi">#93c6a8</color>
+    <color name="ic_coure_yi_pr">#93c3aa</color>
+    <color name="ic_coure_er">#90bfa9</color>
+    <color name="ic_coure_er_pr">#8ebba9</color>
+    <color name="ic_coure_san">#8ab6a9</color>
+    <color name="ic_coure_san_pr">#88b1a8</color>
+    <color name="ic_coure_si">#83aaa6</color>
+    <color name="ic_coure_si_pr">#80a6a6</color>
+    <color name="ic_coure_wu">#7ea1a7</color>
+    <color name="ic_coure_wu_pr">#7c9ca6</color>
+    <color name="ic_coure_liu">#7897a6</color>
+    <color name="ic_coure_liu_pr">#7693a6</color>
+    <color name="ic_coure_qi">#aafde9</color>
+    <color name="ic_coure_qi_pr">#70ffde</color>
+    <color name="ic_coure_ba">#00ffc3</color>
+    <color name="ic_coure_ba_pr">#afd5ff</color>
+    <color name="ic_coure_jiu">#93c7ff</color>
+    <color name="ic_coure_jiu_pr">#70b5ff</color>
+    <color name="ic_coure_yisi">#4ba1fd</color>
+    <color name="ic_coure_yisi_pr">#298ffd</color>
+    <color name="ic_coure_yier">#007bff</color>
+    <color name="ic_coure_yier_pr">#d0f6ff</color>
+    <color name="ic_coure_yisan">#c0f2ff</color>
+    <color name="ic_coure_yisan_pr">#adefff</color>
+    <color name="ic_coure_yis">#9bebff</color>
+    <color name="ic_coure_yis_pr">#8fe9ff</color>
+    <color name="ic_coure_yiwu">#7de5ff</color>
+    <color name="ic_coure_yiwu_pr">#69e1ff</color>
+    <color name="ic_coure_yiliu">#4fdcff</color>
+    <color name="ic_coure_yiliu_pr">#39d7ff</color>
+    <color name="ic_coure_wuw">#12d0ff</color>
+    <color name="ic_coure_wuw_pr">#00ccff</color>
+    <color name="tab_indicator_text_selected">#2DACA1</color>
+    <color name="tab_indicator_text_unselected">#000000</color>
+
+</resources>
